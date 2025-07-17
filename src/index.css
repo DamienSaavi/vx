@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@utility no-scrollbar {
+  @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+}
+
+:root {
+  @apply bg-neutral-900 text-neutral-200 overflow-hidden;
+}
