@@ -13,6 +13,7 @@ type Props = PropsWithChildren & {
   variant?: Variant;
   size?: Size;
   color?: Color;
+  ref?: React.Ref<HTMLButtonElement>;
 };
 
 const colorsMap: Record<Color, string> = {
@@ -31,6 +32,7 @@ export const Button = memo(
     variant = "filled",
     // size = "md",
     color = "primary",
+    ref,
   }: Props) => {
     const getStyles = (): React.CSSProperties => {
       switch (variant) {
@@ -54,9 +56,10 @@ export const Button = memo(
 
     return (
       <button
+        ref={ref}
         aria-label={label}
         onClick={onClick}
-        className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg font-semibold border"
+        className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg font-semibold border pointer-events-auto"
         style={getStyles()}
       >
         {startIcon}

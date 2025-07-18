@@ -87,7 +87,7 @@ export const Session = () => {
         <CurrentHand cards={cards} onDiscard={handleDiscard} />
       </div>
       <div className="z-20">
-        <div className="flex items-center justify-center py-6 px-3 gap-4 ">
+        <div className="flex items-center justify-center py-6 px-3 gap-4">
           <HitMeButton onClick={handleDraw} />
         </div>
         <div ref={listRef}>

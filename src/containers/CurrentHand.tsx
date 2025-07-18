@@ -11,24 +11,25 @@ import {
   type Variants,
 } from "motion/react";
 import { useState, memo, useCallback, useEffect, useRef } from "react";
-import { round, toInteger } from "lodash";
-import { useClickAway, usePrevious } from "@uidotdev/usehooks";
+import { clamp, inRange, round, throttle, toInteger } from "lodash";
 import { Card } from "../components/Card";
 import type { Card as CardType } from "../models/types";
 import { LuChevronRight, LuChevronLeft } from "react-icons/lu";
 import clsx from "clsx";
 import { Button } from "../components/Button";
+import { useScrollerRef } from "../hooks/useScrollerRef";
 
 type Props = {
   cards: CardType[];
   onDiscard: (id: string) => void;
 };
 
-const exitTransition: Transition = {
-  type: "spring",
-  bounce: 0,
-  duration: 0.5,
-};
+// const exitTransition: Transition = {
+//   type: "spring",
+//   bounce: 0,
+//   duration: 0.5,
+// };
+
 const transition: Transition = { type: "spring", stiffness: 700, damping: 50 };
 
 const CardAnimated = memo(
@@ -43,7 +44,7 @@ const CardAnimated = memo(
   }: {
     idx: number;
     card: CardType;
-    state: "before" | "after" | "current";
+    state: "before" | "after" | "current" | "minimized";
     activeIdx: number;
     offsetX: MotionValue<number>;
     showActions: boolean;
@@ -51,18 +52,16 @@ const CardAnimated = memo(
   }) => {
     const variants: Variants = {
       before: {
-        scale: 0.8 - Math.abs(idx - activeIdx) * 0.01,
+        scale: 0.7 - Math.abs(idx - activeIdx) * 0.01,
         zIndex: 0,
         opacity: 1,
-        y: 30,
-        transition,
+        y: 0,
       },
       after: {
-        scale: 0.8 - Math.abs(idx - activeIdx) * 0.01,
+        scale: 0.7 - Math.abs(idx - activeIdx) * 0.01,
         zIndex: activeIdx - idx,
         opacity: 1,
-        y: 30,
-        transition,
+        y: 0,
       },
       current: {
         scale: 1.1,
@@ -70,7 +69,12 @@ const CardAnimated = memo(
         opacity: 1,
         y: showActions ? -30 : 0,
         boxShadow: "0px 0px 16px 16px rgba(0,0,0,0.2)",
-        transition,
+      },
+      minimized: {
+        scale: 1,
+        zIndex: idx === activeIdx ? 1 : -idx,
+        opacity: 1,
+        y: idx === activeIdx ? 0 : idx * 5,
       },
     };
 
@@ -105,11 +109,11 @@ const CardAnimated = memo(
       <motion.div
         animate={state}
         variants={variants}
-        initial={{ opacity: 0, y: 200, scale: 0.8 }}
-        exit={{ opacity: 0, y: 200, transition: exitTransition }}
-        className="absolute max-w-[30dvh] w-full aspect-2/3 rounded-2xl"
+        initial={{ opacity: 0, y: 200, scale: 0.7 }}
+        exit={{ opacity: 0, y: 200 }}
         style={{ x, rotateZ }}
         transition={transition}
+        className="absolute h-[50dvh] max-h-[100vw] aspect-2/3 rounded-2xl"
       >
         <AnimatePresence>
           {state === "current" && showActions && (
@@ -118,15 +122,9 @@ const CardAnimated = memo(
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0.6, y: -96 }}
               transition={transition}
-              className="absolute -bottom-14 flex w-full justify-center gap-1.5 p-1.5 drop-shadow-xl pointer-events-auto"
+              className="absolute -bottom-12 flex w-full justify-center drop-shadow-xl"
             >
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDiscard(card.id);
-                }}
-                color="secondary"
-              >
+              <Button onClick={() => onDiscard(card.id)} color="secondary">
                 Discard
               </Button>
             </motion.div>
@@ -144,12 +142,14 @@ const CardsAnimated = memo(
     activeIdx,
     offsetX,
     showActions,
+    minimized,
     onDiscard,
   }: {
     cards: CardType[];
     activeIdx: number;
     offsetX: MotionValue<number>;
     showActions: boolean;
+    minimized: boolean;
     onDiscard: (id: string) => void;
   }) => {
     return (
@@ -159,7 +159,9 @@ const CardsAnimated = memo(
             <CardAnimated
               key={card.id}
               state={
-                idx < activeIdx
+                minimized
+                  ? "minimized"
+                  : idx < activeIdx
                   ? "before"
                   : idx > activeIdx
                   ? "after"
@@ -188,7 +190,7 @@ const HandControls = memo(
     onSelectNext?: () => void;
   }) => {
     return (
-      <div className="flex absolute justify-between w-full px-6 z-20 bottom-2/5">
+      <div className="flex absolute justify-between w-full px-6 z-20 pointer-events-none">
         <button
           onClick={onSelectPrev}
           aria-label="Previous Card"
@@ -215,19 +217,19 @@ const HandControls = memo(
 );
 
 export const CurrentHand = ({ cards, onDiscard }: Props) => {
-  const [focusedCardIdx, setFocusedCardIdx] = useState(0);
+  const prevCardsLength = useRef(0);
+  const cardScrollerRef = useRef<HTMLDivElement>(null);
+  const scrollerRef = useScrollerRef();
   const [showActions, setShowActions] = useState(false);
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const clickAwayRef = useClickAway<HTMLDivElement>(() =>
-    setShowActions(false)
-  );
-  const prevCardsLength = usePrevious(cards.length);
-  const { scrollX } = useScroll({ container: scrollerRef });
+  const [focusedCardIdx, setFocusedCardIdx] = useState(0);
+  const [minimized, setMinimized] = useState(false);
+  const { scrollX } = useScroll({ container: cardScrollerRef });
+  const { scrollY } = useScroll({ container: scrollerRef });
   const offsetX = useMotionValue(0);
 
   const scrollToIdx = useCallback((idx: number) => {
-    if (scrollerRef.current) {
-      scrollerRef.current.children.item(idx)?.scrollIntoView({
+    if (cardScrollerRef.current) {
+      cardScrollerRef.current.children.item(idx)?.scrollIntoView({
         behavior: "instant",
         block: "center",
         inline: "center",
@@ -245,52 +247,76 @@ export const CurrentHand = ({ cards, onDiscard }: Props) => {
     [scrollToIdx, cards, focusedCardIdx]
   );
 
+  const handleDiscard = useCallback(
+    (id: string) => {
+      setShowActions(false);
+      onDiscard(id);
+    },
+    [onDiscard]
+  );
+
   useEffect(() => {
-    if (prevCardsLength < cards.length) {
+    if (prevCardsLength.current < cards.length || !cards.length) {
       scrollToIdx(cards.length - 1);
+    } else if (!inRange(focusedCardIdx, 0, cards.length)) {
+      scrollToIdx(clamp(focusedCardIdx, 0, cards.length - 1));
     }
-  }, [cards, prevCardsLength, scrollToIdx]);
+    prevCardsLength.current = cards.length;
+  }, [cards, focusedCardIdx, scrollToIdx]);
 
-  useEffect(() => setShowActions(false), [focusedCardIdx]);
+  useEffect(() => setShowActions(false), [focusedCardIdx, cards]);
 
-  useMotionValueEvent(scrollX, "change", (baseValue) => {
-    if (scrollerRef.current) {
-      const { clientWidth, scrollWidth } = scrollerRef.current;
-      const value = baseValue / (scrollWidth - clientWidth);
-      const span = 50 / (cards.length - 1);
-      const pos = ((value * 100) / span + 1) / 2;
-      offsetX.set(round((pos % 1) * 100 - 50, 1));
-      const idx = toInteger(pos);
-      setFocusedCardIdx(idx);
-    }
-  });
+  useMotionValueEvent(
+    scrollX,
+    "change",
+    throttle((baseValue) => {
+      if (cardScrollerRef.current) {
+        const { clientWidth, scrollWidth } = cardScrollerRef.current;
+        const value = baseValue / (scrollWidth - clientWidth);
+        const span = 50 / (cards.length - 1);
+        const pos = ((value * 100) / span + 1) / 2;
+        const newOffset = round((pos % 1) * 100 - 50, 1);
+        offsetX.set(isFinite(newOffset) ? newOffset : 0);
+        const idx = toInteger(pos);
+        setFocusedCardIdx(idx);
+      }
+    }, 33)
+  );
+
+  useMotionValueEvent(
+    scrollY,
+    "change",
+    throttle((value) => {
+      if (scrollerRef.current) {
+        const { clientHeight } = scrollerRef.current;
+        if (value > clientHeight / 10) {
+          setMinimized(true);
+        } else {
+          setMinimized(false);
+        }
+      }
+    }, 33)
+  );
 
   return (
-    <div className="relative flex flex-col justify-center gap-2 items-center h-full min-w-0 max-w-screen w-screen overflow-hidden select-none">
-      <div
-        ref={clickAwayRef}
-        onClick={() => setShowActions((p) => !p)}
-        className="w-full h-[55vh]"
-      >
-        <div
-          ref={scrollerRef}
-          className="flex min-w-0 w-full px-[30vw] h-full items-center snap-x snap-mandatory overflow-x-auto no-scrollbar z-10"
-        >
-          {cards.map((card) => (
-            <div
-              key={card.id}
-              className="snap-center shrink-0 w-[40vw] h-full"
-            />
-          ))}
-        </div>
-      </div>
+    <div className="relative flex flex-col justify-center gap-2 items-center h-full min-w-0 max-w-screen w-screen select-none pointer-events-none overflow-clip">
       <CardsAnimated
         cards={cards}
         activeIdx={focusedCardIdx}
         offsetX={offsetX}
         showActions={showActions}
-        onDiscard={onDiscard}
+        onDiscard={handleDiscard}
+        minimized={minimized}
       />
+      <div
+        ref={cardScrollerRef}
+        onClick={() => setShowActions((p) => !p)}
+        className="flex min-w-0 w-full h-[55vh] px-[34vw] items-center snap-x snap-mandatory overflow-x-auto no-scrollbar pointer-events-auto"
+      >
+        {cards.map((card) => (
+          <div key={card.id} className="snap-center shrink-0 w-[33vw] h-full" />
+        ))}
+      </div>
       <HandControls
         onSelectPrev={focusedCardIdx > 0 ? selectPrevCard : undefined}
         onSelectNext={
