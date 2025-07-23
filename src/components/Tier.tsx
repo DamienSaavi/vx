@@ -13,15 +13,15 @@ const colorMap: Record<number, string> = {
 };
 
 const sizeMap: Record<string, string> = {
-  sm: "text-[8px] w-4 h-4",
-  md: "text-base w-7 h-7 text-shadow-sm",
+  sm: "text-[8px] w-4",
+  md: "text-base w-7 text-shadow-sm",
 };
 
 export const Tier = ({ tier, size = "md" }: Props) => {
   return (
     <span
       className={clsx(
-        "block font-serif font-bold text-white text-center rounded-full opacity-80 p-0.5",
+        "block font-serif font-bold text-white text-center rounded-full opacity-80 p-0.5 aspect-square",
         colorMap[tier],
         sizeMap[size],
       )}

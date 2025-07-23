@@ -1,8 +1,10 @@
 import colors from "tailwindcss/colors";
 import { memo, type JSX, type PropsWithChildren } from "react";
+import clsx from "clsx";
 
 type Color = "primary" | "secondary" | "danger";
 type Variant = "filled" | "outlined" | "text";
+type Shape = "square" | "round";
 type Size = "sm" | "md" | "lg";
 
 type Props = PropsWithChildren & {
@@ -11,8 +13,10 @@ type Props = PropsWithChildren & {
   startIcon?: JSX.Element;
   endIcon?: JSX.Element;
   variant?: Variant;
+  disabled?: boolean;
   size?: Size;
   color?: Color;
+  shape?: Shape;
   ref?: React.Ref<HTMLButtonElement>;
 };
 
@@ -29,9 +33,11 @@ export const Button = memo(
     label,
     startIcon,
     endIcon,
+    disabled,
     variant = "filled",
-    // size = "md",
+    size = "md",
     color = "primary",
+    shape = "square",
     ref,
   }: Props) => {
     const getStyles = (): React.CSSProperties => {
@@ -57,9 +63,14 @@ export const Button = memo(
     return (
       <button
         ref={ref}
+        disabled={disabled}
         aria-label={label}
         onClick={onClick}
-        className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg font-semibold border pointer-events-auto"
+        className={clsx(
+          "flex items-center gap-2 cursor-pointer font-semibold border pointer-events-auto",
+          shape === "square" ? "rounded-lg px-3 py-2" : "rounded-full p-2",
+          size === "sm" ? "text-sm" : size === "lg" ? "text-2xl" : "text-base"
+        )}
         style={getStyles()}
       >
         {startIcon}

@@ -17,18 +17,11 @@ import type { Card as CardType } from "../models/types";
 import { LuChevronRight, LuChevronLeft } from "react-icons/lu";
 import clsx from "clsx";
 import { Button } from "../components/Button";
-import { useScrollerRef } from "../hooks/useScrollerRef";
 
 type Props = {
   cards: CardType[];
   onDiscard: (id: string) => void;
 };
-
-// const exitTransition: Transition = {
-//   type: "spring",
-//   bounce: 0,
-//   duration: 0.5,
-// };
 
 const transition: Transition = { type: "spring", stiffness: 700, damping: 50 };
 
@@ -44,7 +37,7 @@ const CardAnimated = memo(
   }: {
     idx: number;
     card: CardType;
-    state: "before" | "after" | "current" | "minimized";
+    state: "before" | "after" | "current";
     activeIdx: number;
     offsetX: MotionValue<number>;
     showActions: boolean;
@@ -70,13 +63,9 @@ const CardAnimated = memo(
         y: showActions ? -30 : 0,
         boxShadow: "0px 0px 16px 16px rgba(0,0,0,0.2)",
       },
-      minimized: {
-        scale: 1,
-        zIndex: idx === activeIdx ? 1 : -idx,
-        opacity: 1,
-        y: idx === activeIdx ? 0 : idx * 5,
-      },
     };
+
+    const [actionsDisabled, setActionsDisabled] = useState(false);
 
     const x = useSpring(
       useTransform(offsetX, (value) => {
@@ -118,13 +107,21 @@ const CardAnimated = memo(
         <AnimatePresence>
           {state === "current" && showActions && (
             <motion.div
-              initial={{ opacity: 0.6, y: -96 }}
+              onAnimationStart={() => setActionsDisabled(true)}
+              onAnimationComplete={() => setActionsDisabled(false)}
+              initial={{ opacity: 0.2, y: -55 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0.6, y: -96 }}
+              exit={{ opacity: 0.2, y: -55 }}
               transition={transition}
-              className="absolute -bottom-12 flex w-full justify-center drop-shadow-xl"
+              className={
+                "absolute -bottom-12 flex w-full justify-center drop-shadow-xl"
+              }
             >
-              <Button onClick={() => onDiscard(card.id)} color="secondary">
+              <Button
+                onClick={() => onDiscard(card.id)}
+                disabled={actionsDisabled}
+                color="secondary"
+              >
                 Discard
               </Button>
             </motion.div>
@@ -142,14 +139,12 @@ const CardsAnimated = memo(
     activeIdx,
     offsetX,
     showActions,
-    minimized,
     onDiscard,
   }: {
     cards: CardType[];
     activeIdx: number;
     offsetX: MotionValue<number>;
     showActions: boolean;
-    minimized: boolean;
     onDiscard: (id: string) => void;
   }) => {
     return (
@@ -159,9 +154,7 @@ const CardsAnimated = memo(
             <CardAnimated
               key={card.id}
               state={
-                minimized
-                  ? "minimized"
-                  : idx < activeIdx
+                idx < activeIdx
                   ? "before"
                   : idx > activeIdx
                   ? "after"
@@ -219,12 +212,9 @@ const HandControls = memo(
 export const CurrentHand = ({ cards, onDiscard }: Props) => {
   const prevCardsLength = useRef(0);
   const cardScrollerRef = useRef<HTMLDivElement>(null);
-  const scrollerRef = useScrollerRef();
   const [showActions, setShowActions] = useState(false);
   const [focusedCardIdx, setFocusedCardIdx] = useState(0);
-  const [minimized, setMinimized] = useState(false);
   const { scrollX } = useScroll({ container: cardScrollerRef });
-  const { scrollY } = useScroll({ container: scrollerRef });
   const offsetX = useMotionValue(0);
 
   const scrollToIdx = useCallback((idx: number) => {
@@ -283,30 +273,14 @@ export const CurrentHand = ({ cards, onDiscard }: Props) => {
     }, 33)
   );
 
-  useMotionValueEvent(
-    scrollY,
-    "change",
-    throttle((value) => {
-      if (scrollerRef.current) {
-        const { clientHeight } = scrollerRef.current;
-        if (value > clientHeight / 10) {
-          setMinimized(true);
-        } else {
-          setMinimized(false);
-        }
-      }
-    }, 33)
-  );
-
   return (
-    <div className="relative flex flex-col justify-center gap-2 items-center h-full min-w-0 max-w-screen w-screen select-none pointer-events-none overflow-clip">
+    <div className="relative flex flex-col justify-center gap-2 items-center h-full min-w-0 max-w-screen w-screen pointer-events-none overflow-clip">
       <CardsAnimated
         cards={cards}
         activeIdx={focusedCardIdx}
         offsetX={offsetX}
         showActions={showActions}
         onDiscard={handleDiscard}
-        minimized={minimized}
       />
       <div
         ref={cardScrollerRef}

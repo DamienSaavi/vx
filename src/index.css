@@ -4,6 +4,19 @@
   @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
 }
 
+@layer components {
+  .no-spinner {
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+
+  .no-spinner::-webkit-outer-spin-button,
+  .no-spinner::-webkit-inner-spin-button {
+    margin: 0;
+    -webkit-appearance: none;
+  }
+}
+
 :root {
-  @apply bg-neutral-900 text-neutral-200 overflow-hidden;
+  @apply bg-neutral-900 text-neutral-200 overflow-hidden select-none;
 }
