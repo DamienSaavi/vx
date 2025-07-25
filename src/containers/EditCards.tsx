@@ -9,7 +9,7 @@ import { type Card as CardType } from "../models/types";
 import { Card } from "../components/Card";
 import { useSessionData } from "../hooks/useSessionData";
 
-export const FullDeck = memo(() => {
+export const EditCards = memo(() => {
   const { disabledCardIds, setDisabledCardIds } = useSessionData();
   const [displayedCards, setDisplayedCards] = useState<CardType[]>(CARDS);
   const [searchQuery, setSearchQuery] = useState("");

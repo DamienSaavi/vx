@@ -20,10 +20,22 @@ type Props = PropsWithChildren & {
   ref?: React.Ref<HTMLButtonElement>;
 };
 
-const colorsMap: Record<Color, string> = {
-  primary: colors.sky[600],
-  secondary: colors.slate[600],
-  danger: colors.red[600],
+const colorsMap: Record<Color, Record<Variant, string>> = {
+  primary: {
+    "filled":colors.sky[700],
+    "outlined":colors.sky[400],
+    "text":colors.sky[400]
+  },
+  secondary: {
+    "filled":colors.slate[700],
+    "outlined":colors.slate[400],
+    "text":colors.slate[400]
+  },
+  danger: {
+    "filled":colors.red[700],
+    "outlined":colors.red[400],
+    "text":colors.red[400]
+  },
 };
 
 export const Button = memo(
@@ -44,18 +56,18 @@ export const Button = memo(
       switch (variant) {
         case "outlined":
           return {
-            color: colorsMap[color],
-            borderColor: colorsMap[color],
+            color: colorsMap[color][variant],
+            borderColor: colorsMap[color][variant],
           };
         case "text":
           return {
-            color: colorsMap[color],
+            color: colorsMap[color][variant],
             border: "none",
           };
         default:
           return {
             borderColor: "transparent",
-            backgroundColor: colorsMap[color],
+            backgroundColor: colorsMap[color][variant],
           };
       }
     };

@@ -120,7 +120,7 @@ const CardAnimated = memo(
               <Button
                 onClick={() => onDiscard(card.id)}
                 disabled={actionsDisabled}
-                color="secondary"
+                color="danger"
               >
                 Discard
               </Button>
@@ -274,7 +274,16 @@ export const CurrentHand = ({ cards, onDiscard }: Props) => {
   );
 
   return (
-    <div className="relative flex flex-col justify-center gap-2 items-center h-full min-w-0 max-w-screen w-screen pointer-events-none overflow-clip">
+    <div className="relative flex flex-col justify-center items-center h-full min-w-0 max-w-screen w-screen pointer-events-none overflow-clip">
+      <span
+        className={clsx(
+          "absolute bottom-0 font-mono text-xs text-neutral-300 z-20 bg-neutral-800 px-2 py-1 rounded-full",
+          !cards.length && "hidden"
+        )}
+      >
+        {(focusedCardIdx + 1).toString().padStart(2)}/
+        {cards.length.toString().padEnd(2)}
+      </span>
       <CardsAnimated
         cards={cards}
         activeIdx={focusedCardIdx}

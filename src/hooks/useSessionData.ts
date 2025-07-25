@@ -14,12 +14,12 @@ export const useSessionData = () => {
     return data;
   });
 
-  const setActiveCardIds = (ids: string[]) => {
-    db.sessionData.put({ key: "activeCardIds", value: ids }, "activeCardIds");
+  const setActiveCardIds = async (ids: string[]) => {
+    await db.sessionData.put({ key: "activeCardIds", value: ids }, "activeCardIds");
   };
 
-  const setDisabledCardIds = (ids: string[]) => {
-    db.sessionData.put(
+  const setDisabledCardIds = async (ids: string[]) => {
+    await db.sessionData.put(
       { key: "disabledCardIds", value: ids },
       "disabledCardIds"
     );

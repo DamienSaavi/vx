@@ -7,16 +7,16 @@ import { CARDS } from "../utils/consts/cards";
 import { Button } from "../components/Button";
 import { LuSettings2 } from "react-icons/lu";
 import { TbCardsFilled } from "react-icons/tb";
-import { Settings } from "./Settings";
-import { FullDeck } from "./FullDeck";
+import { EditCards } from "./EditCards";
 import { Modal } from "../components/Modal";
 import colors from "tailwindcss/colors";
 import { useSessionData } from "../hooks/useSessionData";
 import type { Card } from "../models/types";
+import { ResetSessionConfirmation } from "./ResetSessionConfirmation";
 
 export const Session = () => {
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isFullDeckOpen, setIsFullDeckOpen] = useState(false);
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [isEditCardsModalOpen, setIsEditCardsModalOpen] = useState(false);
   const { disabledCardIds, activeCardIds, setActiveCardIds } = useSessionData();
 
   const cards = useMemo(
@@ -94,7 +94,7 @@ export const Session = () => {
           variant="outlined"
           color="secondary"
           shape="round"
-          onClick={() => setIsFullDeckOpen((p) => !p)}
+          onClick={() => setIsEditCardsModalOpen((p) => !p)}
         >
           <TbCardsFilled color={colors.slate[300]} />
         </Button>
@@ -103,7 +103,7 @@ export const Session = () => {
           variant="outlined"
           color="secondary"
           shape="round"
-          onClick={() => setIsSettingsOpen((p) => !p)}
+          onClick={() => setIsResetModalOpen((p) => !p)}
         >
           <LuSettings2 color={colors.slate[300]} />
         </Button>
@@ -123,15 +123,20 @@ export const Session = () => {
           />
         </div>
       </div>
-      <Modal open={isSettingsOpen} setOpen={setIsSettingsOpen} title="Settings">
-        <Settings />
+      <Modal
+        open={isResetModalOpen}
+        setOpen={setIsResetModalOpen}
+        title="Reset"
+        maxWidth={"24rem"}
+      >
+        <ResetSessionConfirmation onClose={() => setIsResetModalOpen(false)} />
       </Modal>
       <Modal
-        open={isFullDeckOpen}
-        setOpen={setIsFullDeckOpen}
+        open={isEditCardsModalOpen}
+        setOpen={setIsEditCardsModalOpen}
         title="All Cards"
       >
-        <FullDeck />
+        <EditCards />
       </Modal>
     </div>
   );

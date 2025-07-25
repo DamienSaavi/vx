@@ -1,8 +1,12 @@
-import { motion, useMotionValueEvent, useScroll } from "motion/react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+} from "motion/react";
 import { Tier } from "../components/Tier";
 import type { Card as CardType } from "../models/types";
-import { LuX } from "react-icons/lu";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { Button } from "../components/Button";
 import { useScrollerRef } from "../hooks/useScrollerRef";
@@ -38,6 +42,10 @@ export const CurrentCardsList = ({ cards, onDiscard, onClear }: Props) => {
     [scrollerRef]
   );
 
+  useEffect(() => {
+    if (!isSticky) setShowActionsOnIdx(-1);
+  }, [isSticky]);
+
   return (
     <div
       className={clsx(
@@ -59,8 +67,9 @@ export const CurrentCardsList = ({ cards, onDiscard, onClear }: Props) => {
         {isSticky && (
           <div className="absolute right-3.5">
             <Button
-              color="secondary"
-              variant="filled"
+              color="danger"
+              size="sm"
+              variant="outlined"
               onClick={(e) => {
                 e.stopPropagation();
                 onClear();
@@ -71,14 +80,11 @@ export const CurrentCardsList = ({ cards, onDiscard, onClear }: Props) => {
           </div>
         )}
       </div>
-      <ul>
+      <ul className="py-3">
         {cards.map((card, idx) => (
-          <li
-            key={card.id}
-            className="flex justify-between items-center gap-2 px-3 py-2"
-          >
-            <div
-              className="grow"
+          <li key={card.id} className="flex justify-between items-center px-3 gap-x-3">
+            <button
+              className="grow text-start py-2.5"
               onClick={() =>
                 setShowActionsOnIdx((prev) => (prev === idx ? -1 : idx))
               }
@@ -87,27 +93,29 @@ export const CurrentCardsList = ({ cards, onDiscard, onClear }: Props) => {
                 {card.name}
                 <Tier tier={card.tier} size="sm" />
               </h6>
-              <p className="text-sm text-neutral-400 line-clamp-2">
-                {card.description}
-              </p>
-            </div>
-            <motion.div
-              initial={{ width: 0 }}
-              animate={showActionsOnIdx === idx ? "visible" : "hidden"}
-              transition={{ type: "spring", stiffness: 500, damping: 40 }}
-              variants={{
-                visible: { width: "fit-content" },
-              }}
-            >
-              <Button
-                label="discard"
-                variant="text"
-                color="danger"
-                onClick={() => onDiscard(card.id)}
-              >
-                <LuX strokeWidth={2} fontSize={28} className="text-red-400" />
-              </Button>
-            </motion.div>
+              <p className="text-sm text-neutral-400">{card.description}</p>
+            </button>
+            <AnimatePresence>
+              {showActionsOnIdx === idx && (
+                <motion.div
+                  initial={{ x: 100 }}
+                  animate={{ x: 0 }}
+                  exit={{ x: 100 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 40 }}
+                >
+                  <Button
+                    label="discard"
+                    color="danger"
+                    size="sm"
+                    disabled={showActionsOnIdx !== idx}
+                    onClick={() => onDiscard(card.id)}
+                  >
+                    {/* <LuX strokeWidth={2} fontSize={28} className="text-red-400" /> */}
+                    Discard
+                  </Button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </li>
         ))}
       </ul>
