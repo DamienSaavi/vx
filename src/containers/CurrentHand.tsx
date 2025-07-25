@@ -45,20 +45,20 @@ const CardAnimated = memo(
   }) => {
     const variants: Variants = {
       before: {
-        scale: 0.7 - Math.abs(idx - activeIdx) * 0.01,
+        scale: 0.8 - Math.abs(idx - activeIdx) * 0.01,
         zIndex: 0,
         opacity: 1,
         y: 0,
       },
       after: {
-        scale: 0.7 - Math.abs(idx - activeIdx) * 0.01,
-        zIndex: activeIdx - idx,
+        scale: 0.8 - Math.abs(idx - activeIdx) * 0.01,
+        zIndex: 20 - idx,
         opacity: 1,
         y: 0,
       },
       current: {
         scale: 1.1,
-        zIndex: 10,
+        zIndex: 20,
         opacity: 1,
         y: showActions ? -30 : 0,
         boxShadow: "0px 0px 16px 16px rgba(0,0,0,0.2)",
@@ -71,9 +71,9 @@ const CardAnimated = memo(
       useTransform(offsetX, (value) => {
         switch (state) {
           case "before":
-            return -50 + 10 * (idx - activeIdx);
+            return -50 + 16 * (idx - activeIdx);
           case "after":
-            return 50 + 10 * (idx - activeIdx);
+            return 50 + 16 * (idx - activeIdx);
           default:
             return 0.25 * -value;
         }
@@ -183,7 +183,7 @@ const HandControls = memo(
     onSelectNext?: () => void;
   }) => {
     return (
-      <div className="flex absolute justify-between w-full px-6 z-20 pointer-events-none">
+      <div className="flex absolute justify-between w-full px-6 pointer-events-none">
         <button
           onClick={onSelectPrev}
           aria-label="Previous Card"
@@ -277,7 +277,7 @@ export const CurrentHand = ({ cards, onDiscard }: Props) => {
     <div className="relative flex flex-col justify-center items-center h-full min-w-0 max-w-screen w-screen pointer-events-none overflow-clip">
       <span
         className={clsx(
-          "absolute bottom-0 font-mono text-xs text-neutral-300 z-20 bg-neutral-800 px-2 py-1 rounded-full",
+          "absolute bottom-0 font-mono text-xs text-neutral-300 z-10 bg-neutral-800 px-2 py-1 rounded-full",
           !cards.length && "hidden"
         )}
       >

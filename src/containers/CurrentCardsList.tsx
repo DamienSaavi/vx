@@ -34,7 +34,7 @@ export const CurrentCardsList = ({ cards, onDiscard }: Props) => {
       ref={ref}
       className="relative flex flex-col items-stretch w-full grow overflow-x-hidden"
     >
-      <div className="h-5 shrink-0 sticky top-0 bg-gradient-to-b from-neutral-900/100 to-neutral-900/0 z-10" />
+      <div className="h-5 shrink-0 sticky top-0 bg-gradient-to-b from-neutral-900/100 to-neutral-900/0" />
       <ul className="py-4">
         <AnimatePresence>
           {cardsReversed.map((card, idx) => (
@@ -90,7 +90,7 @@ export const CurrentCardsList = ({ cards, onDiscard }: Props) => {
           ))}
         </AnimatePresence>
       </ul>
-      <div className="h-5 shrink-0 sticky bottom-0 bg-gradient-to-t from-neutral-900/100 to-neutral-900/0 z-10" />
+      <div className="h-5 shrink-0 sticky bottom-0 bg-gradient-to-t from-neutral-900/100 to-neutral-900/0" />
     </div>
   );
 };
