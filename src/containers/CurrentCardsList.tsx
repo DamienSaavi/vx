@@ -1,124 +1,96 @@
-import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useScroll,
-} from "motion/react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { Tier } from "../components/Tier";
-import type { Card as CardType } from "../models/types";
-import { useCallback, useEffect, useRef, useState } from "react";
-import clsx from "clsx";
 import { Button } from "../components/Button";
-import { useScrollerRef } from "../hooks/useScrollerRef";
+import type { Card as CardType } from "../models/types";
+import { useClickAway } from "@uidotdev/usehooks";
 
 type Props = {
   cards: CardType[];
   onDiscard: (id: string) => void;
-  onClear: () => void;
 };
 
-export const CurrentCardsList = ({ cards, onDiscard, onClear }: Props) => {
-  const headerRef = useRef<HTMLDivElement>(null);
-  const scrollerRef = useScrollerRef();
+export const CurrentCardsList = ({ cards, onDiscard }: Props) => {
   const [showActionsOnIdx, setShowActionsOnIdx] = useState(-1);
-  const [isSticky, setIsSticky] = useState(false);
-  const { scrollY } = useScroll({ container: scrollerRef });
+  const ref = useClickAway<HTMLDivElement>(() => setShowActionsOnIdx(-1));
+  const prevCardsLength = useRef(0);
 
-  useMotionValueEvent(scrollY, "change", () => {
-    const rect = headerRef.current?.getBoundingClientRect();
-    if (rect && scrollerRef.current) setIsSticky(rect.top <= 1);
-  });
+  const cardsReversed = useMemo(() => cards.slice().reverse(), [cards]);
 
-  const scrollToList = useCallback(() => {
-    headerRef.current?.scrollIntoView({
-      block: "start",
-      inline: "start",
-      behavior: "smooth",
-    });
-  }, []);
-
-  const scrollToTop = useCallback(
-    () => scrollerRef.current?.scrollTo({ top: 0, behavior: "smooth" }),
-    [scrollerRef]
-  );
+  const handleDiscard = (id: string) => {
+    setShowActionsOnIdx(-1);
+    onDiscard(id);
+  };
 
   useEffect(() => {
-    if (!isSticky) setShowActionsOnIdx(-1);
-  }, [isSticky]);
+    if (ref.current && prevCardsLength.current < cards.length) {
+      ref.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    prevCardsLength.current = cards.length;
+  }, [cards, ref]);
 
   return (
     <div
-      className={clsx(
-        "flex flex-col items-stretch w-full min-h-screen duration-150 bg-neutral-800 overflow-clip pb-4",
-        isSticky ? "rounded-t-none" : "rounded-t-3xl"
-      )}
-      style={{ boxShadow: "0px -4px 8px 0px rgba(0,0,0,0.2)" }}
+      ref={ref}
+      className="relative flex flex-col items-stretch w-full grow overflow-x-hidden"
     >
-      <div
-        ref={headerRef}
-        onClick={isSticky ? scrollToTop : scrollToList}
-        className={clsx(
-          "flex gap-3 justify-center sticky top-0 items-center h-16 transition-colors duration-150 bg-neutral-800 px-4 py-2 z-10 border-b border-neutral-700/0",
-          isSticky && "border-neutral-700/100"
-        )}
-      >
-        <div className="w-12 h-1 absolute top-2 rounded-md bg-neutral-500" />
-        <h5 className="font-bold text-neutral-200 text-center">Active Cards</h5>
-        {isSticky && (
-          <div className="absolute right-3.5">
-            <Button
-              color="danger"
-              size="sm"
-              variant="outlined"
-              onClick={(e) => {
-                e.stopPropagation();
-                onClear();
+      <div className="h-5 shrink-0 sticky top-0 bg-gradient-to-b from-neutral-900/100 to-neutral-900/0 z-10" />
+      <ul className="py-4">
+        <AnimatePresence>
+          {cardsReversed.map((card, idx) => (
+            <motion.li
+              initial={{ height: 0, opacity: 0 }}
+              animate={{
+                height: "auto",
+                opacity: 1,
+                transition: { duration: 0.3, ease: "easeInOut" },
               }}
+              exit={{
+                x: "-100dvw",
+                opacity: 0,
+                transition: { duration: 0.3, ease: "easeInOut" },
+              }}
+              key={card.id}
+              className="flex justify-between items-center px-3.5 gap-x-3"
             >
-              Clear All
-            </Button>
-          </div>
-        )}
-      </div>
-      <ul className="py-3">
-        {cards.map((card, idx) => (
-          <li key={card.id} className="flex justify-between items-center px-3 gap-x-3">
-            <button
-              className="grow text-start py-2.5"
-              onClick={() =>
-                setShowActionsOnIdx((prev) => (prev === idx ? -1 : idx))
-              }
-            >
-              <h6 className="flex items-center gap-2 pb-1 text-neutral-200 font-semibold">
-                {card.name}
-                <Tier tier={card.tier} size="sm" />
-              </h6>
-              <p className="text-sm text-neutral-400">{card.description}</p>
-            </button>
-            <AnimatePresence>
-              {showActionsOnIdx === idx && (
-                <motion.div
-                  initial={{ x: 100 }}
-                  animate={{ x: 0 }}
-                  exit={{ x: 100 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 40 }}
-                >
-                  <Button
-                    label="discard"
-                    color="danger"
-                    size="sm"
-                    disabled={showActionsOnIdx !== idx}
-                    onClick={() => onDiscard(card.id)}
+              <AnimatePresence>
+                {showActionsOnIdx === idx && (
+                  <motion.div
+                    className="overflow-clip"
+                    initial={{ width: 0, x: -100 }}
+                    animate={{ width: "auto", x: 0 }}
+                    exit={{ width: 0, x: -100 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 40 }}
                   >
-                    {/* <LuX strokeWidth={2} fontSize={28} className="text-red-400" /> */}
-                    Discard
-                  </Button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </li>
-        ))}
+                    <Button
+                      label="discard"
+                      color="danger"
+                      size="sm"
+                      disabled={showActionsOnIdx !== idx}
+                      onClick={() => handleDiscard(card.id)}
+                    >
+                      Discard
+                    </Button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <button
+                className="grow text-start py-2.5"
+                onClick={() =>
+                  setShowActionsOnIdx((prev) => (prev === idx ? -1 : idx))
+                }
+              >
+                <h6 className="flex items-center gap-2 pb-1 font-semibold">
+                  {card.name}
+                  <Tier tier={card.tier} size="sm" />
+                </h6>
+                <p className="text-sm text-neutral-400">{card.description}</p>
+              </button>
+            </motion.li>
+          ))}
+        </AnimatePresence>
       </ul>
+      <div className="h-5 shrink-0 sticky bottom-0 bg-gradient-to-t from-neutral-900/100 to-neutral-900/0 z-10" />
     </div>
   );
 };

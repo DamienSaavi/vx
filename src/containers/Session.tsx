@@ -1,23 +1,30 @@
-import { HitMeButton } from "../components/HitMeButton";
+import { HitMeButton } from "../components/DrawButton";
 import { CurrentHand } from "./CurrentHand";
 import { CurrentCardsList } from "./CurrentCardsList";
 import { useCallback, useMemo, useState } from "react";
 import { filter, find, includes, inRange, random, sortBy, union } from "lodash";
 import { CARDS } from "../utils/consts/cards";
 import { Button } from "../components/Button";
-import { LuSettings2 } from "react-icons/lu";
 import { TbCardsFilled } from "react-icons/tb";
+import colors from "tailwindcss/colors";
 import { EditCards } from "./EditCards";
 import { Modal } from "../components/Modal";
-import colors from "tailwindcss/colors";
-import { useSessionData } from "../hooks/useSessionData";
 import type { Card } from "../models/types";
 import { ResetSessionConfirmation } from "./ResetSessionConfirmation";
-
+import { RiResetLeftLine } from "react-icons/ri";
+import { useSessionData } from "../hooks/useSessionData";
+import { TbPlayCardOff } from "react-icons/tb";
+import { TbList } from "react-icons/tb";
 export const Session = () => {
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isEditCardsModalOpen, setIsEditCardsModalOpen] = useState(false);
-  const { disabledCardIds, activeCardIds, setActiveCardIds } = useSessionData();
+  const {
+    disabledCardIds,
+    activeCardIds,
+    viewMode,
+    setActiveCardIds,
+    setViewMode,
+  } = useSessionData();
 
   const cards = useMemo(
     () =>
@@ -81,60 +88,73 @@ export const Session = () => {
     [activeCardIds, setActiveCardIds]
   );
 
-  const handleClear = useCallback(
-    () => setActiveCardIds([]),
-    [setActiveCardIds]
-  );
+  const handleToggleView = useCallback(() => {
+    const newValue = viewMode === "cards" ? "list" : "cards";
+    setViewMode(newValue);
+  }, [setViewMode, viewMode]);
 
   return (
-    <div className="relative w-screen flex flex-col items-stretch bg-neutral-900">
-      <div className="flex justify-between p-4 pb-0">
+    <div className="relative w-screen flex flex-col min-h-0 h-dvh max-h-dvh items-stretch bg-neutral-900">
+      <div className="flex grow-0 shrink-0 justify-between p-4">
         <Button
           size="lg"
           variant="outlined"
           color="secondary"
           shape="round"
+          label="Modify Deck"
           onClick={() => setIsEditCardsModalOpen((p) => !p)}
         >
-          <TbCardsFilled color={colors.slate[300]} />
+          <TbPlayCardOff color={colors.slate[300]} />
         </Button>
         <Button
           size="lg"
           variant="outlined"
           color="secondary"
           shape="round"
+          label="Reset"
           onClick={() => setIsResetModalOpen((p) => !p)}
         >
-          <LuSettings2 color={colors.slate[300]} />
+          <RiResetLeftLine color={colors.slate[300]} />
         </Button>
       </div>
-      <div className="flex items-center h-[calc(100dvh-210px)] w-full z-0">
-        <CurrentHand cards={cards} onDiscard={handleDiscard} />
+      <div className="flex flex-col grow min-h-0 h-0 items-center w-full">
+        {viewMode === "cards" ? (
+          <CurrentHand cards={cards} onDiscard={handleDiscard} />
+        ) : (
+          <CurrentCardsList cards={cards} onDiscard={handleDiscard} />
+        )}
       </div>
-      <div className="z-20">
-        <div className="flex items-center justify-center py-6 px-3 gap-4">
-          <HitMeButton onClick={handleDraw} />
+      <div className="relative flex items-center justify-center shrink-0 grow-0 pb-6 pt-4 px-3 gap-4">
+        <div className="absolute left-5">
+          <Button
+            variant="text"
+            size="lg"
+            label="Toggle View"
+            color="secondary"
+            onClick={handleToggleView}
+          >
+            {viewMode === "cards" ? (
+              <TbCardsFilled color={colors.slate[300]} />
+            ) : (
+              <TbList color={colors.slate[300]} />
+            )}
+          </Button>
         </div>
-        <div>
-          <CurrentCardsList
-            cards={cards}
-            onDiscard={handleDiscard}
-            onClear={handleClear}
-          />
-        </div>
+        <HitMeButton onClick={handleDraw} />
       </div>
+
       <Modal
         open={isResetModalOpen}
         setOpen={setIsResetModalOpen}
         title="Reset"
-        maxWidth={"24rem"}
+        maxWidth="28rem"
       >
         <ResetSessionConfirmation onClose={() => setIsResetModalOpen(false)} />
       </Modal>
       <Modal
         open={isEditCardsModalOpen}
         setOpen={setIsEditCardsModalOpen}
-        title="All Cards"
+        title="Modify Deck"
       >
         <EditCards />
       </Modal>
