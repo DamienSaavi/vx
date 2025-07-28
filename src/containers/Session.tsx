@@ -3,7 +3,7 @@ import { CurrentHand } from "./CurrentHand";
 import { CurrentCardsList } from "./CurrentCardsList";
 import { useCallback, useMemo, useState } from "react";
 import { filter, find, includes, inRange, random, sortBy, union } from "lodash";
-import { CARDS } from "../utils/consts/cards";
+import { CARDS, TIER_PROBABILITY } from "../utils/consts/cards";
 import { Button } from "../components/Button";
 import { TbCardsFilled } from "react-icons/tb";
 import colors from "tailwindcss/colors";
@@ -53,20 +53,7 @@ export const Session = () => {
     for (let i = 0; i < options.length; i++) {
       const option = options[i];
       const prevCursor = cursor;
-      switch (option.tier) {
-        case 1:
-          cursor += 7;
-          break;
-        case 2:
-          cursor += 3;
-          break;
-        case 3:
-          cursor += 1;
-          break;
-        default:
-          cursor += 7;
-          break;
-      }
+      cursor += TIER_PROBABILITY[option.tier];
       probabilityField.push([option.id, [prevCursor, cursor]]);
     }
 
