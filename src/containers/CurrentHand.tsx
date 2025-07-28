@@ -188,7 +188,7 @@ const HandControls = memo(
           onClick={onSelectPrev}
           aria-label="Previous Card"
           className={clsx(
-            "flex justify-center cursor-pointer transition-opacity duration-200 pointer-events-auto items-center p-2.5 -m-2.5 rounded-full bg-neutral-700 text-neutral-100 opacity-0",
+            "flex justify-center cursor-pointer transition-opacity duration-200 pointer-events-auto items-center p-2.5 -m-2.5 rounded-full bg-neutral-700 text-neutral-100 opacity-0 z-20",
             onSelectPrev && "opacity-90"
           )}
         >
@@ -198,7 +198,7 @@ const HandControls = memo(
           onClick={onSelectNext}
           aria-label="Next Card"
           className={clsx(
-            "flex justify-center cursor-pointer transition-opacity duration-200 pointer-events-auto items-center p-2.5 -m-2.5 rounded-full bg-neutral-700 text-neutral-100 opacity-0",
+            "flex justify-center cursor-pointer transition-opacity duration-200 pointer-events-auto items-center p-2.5 -m-2.5 rounded-full bg-neutral-700 text-neutral-100 opacity-0 z-20",
             onSelectNext && "opacity-90"
           )}
         >

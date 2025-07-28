@@ -15,6 +15,7 @@ import { RiResetLeftLine } from "react-icons/ri";
 import { useSessionData } from "../hooks/useSessionData";
 import { TbPlayCardOff } from "react-icons/tb";
 import { TbList } from "react-icons/tb";
+import { AnimatePresence, motion } from "motion/react";
 export const Session = () => {
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isEditCardsModalOpen, setIsEditCardsModalOpen] = useState(false);
@@ -133,11 +134,29 @@ export const Session = () => {
             color="secondary"
             onClick={handleToggleView}
           >
-            {viewMode === "cards" ? (
-              <TbCardsFilled color={colors.slate[300]} />
-            ) : (
-              <TbList color={colors.slate[300]} />
-            )}
+            <AnimatePresence>
+              {viewMode === "cards" ? (
+                <motion.div
+                  key="cards-view"
+                  initial={{ x: 20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ position: "absolute", x: 20, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                >
+                  <TbCardsFilled color={colors.slate[300]} />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="list-view"
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ position: "absolute", x: -20, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                >
+                  <TbList color={colors.slate[300]} />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Button>
         </div>
         <HitMeButton onClick={handleDraw} />
