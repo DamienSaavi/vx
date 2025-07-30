@@ -1,5 +1,3 @@
-import { isEmpty } from "lodash";
-import { useState } from "react";
 import { TbList, TbPlayCardOff } from "react-icons/tb";
 
 export const Info = () => {
