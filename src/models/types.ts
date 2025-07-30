@@ -1,17 +1,4 @@
 type CardTier = 1 | 2 | 3;
-type ViewMode = "cards" | "list";
-
-type ActiveCardIdsData = {
-  activeCardIds: string[];
-};
-
-type DisabledCardIdsData = {
-  disabledCardIds: string[];
-};
-
-type ViewModeData = {
-  viewMode: ViewMode;
-};
 
 export type Card = {
   id: string;
@@ -21,27 +8,8 @@ export type Card = {
   setId?: string;
 };
 
-export type SessionData = ActiveCardIdsData &
-  DisabledCardIdsData &
-  ViewModeData;
+export type ViewMode = "cards" | "list";
 
-//======= DB TYPES =======
-export type CardItem = Card;
-export type SessionDataItem =
-  | { key: keyof ActiveCardIdsData; value: ActiveCardIdsData["activeCardIds"] }
-  | {
-      key: keyof DisabledCardIdsData;
-      value: DisabledCardIdsData["disabledCardIds"];
-    }
-  | {
-      key: keyof ViewModeData;
-      value: ViewModeData["viewMode"];
-    };
-// | {
-//     key: "disabledCardIds";
-//     value: string[];
-//   }
-// | {
-//     key: "activeCardIds";
-//     value: string;
-//   };
+export type Setting = { key: string; value: unknown };
+export type ActiveCard = { id: string; idx?: number };
+export type DisabledCard = { id: string };

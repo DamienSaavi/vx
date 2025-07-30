@@ -34,19 +34,21 @@ export const Modal = memo(
                 className="absolute top-0 w-full h-full flex justify-center items-center p-3 z-50 pointer-events-none"
               >
                 <div
-                  className={`flex flex-col grow min-w-0 min-h-0 max-h-[calc(100dvh-24px)] items-stretch p-3 m-3 bg-neutral-800 rounded-xl border border-neutral-700 shadow-xl pointer-events-auto`}
+                  className="flex flex-col grow min-w-0 min-h-0 max-h-[calc(100dvh-24px)] items-stretch p-0 bg-neutral-800 rounded-xl border border-neutral-700 shadow-xl pointer-events-auto"
                   style={{ maxWidth }}
                 >
-                  <div className="relative flex items-center justify-center mb-3">
-                    <Dialog.Title className="font-bold text-center">
+                  <div className="relative flex items-center justify-center m-3">
+                    <Dialog.Title className="font-bold text-lg text-center">
                       {title}
                     </Dialog.Title>
                     <Dialog.Close className="absolute left-0 cursor-pointer p-2.5 -m-2.5 text-neutral-400">
                       <LuX fontSize="1.4rem" />
                     </Dialog.Close>
                   </div>
-                  <Divider />
+                  <Divider px={0.5} />
+                  <div className="px-2">
                   {children}
+                  </div>
                 </div>
               </PopupAnimated>
             </Dialog.Portal>

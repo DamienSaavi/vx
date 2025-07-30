@@ -1,6 +1,6 @@
 import { CARDS } from "../utils/consts/cards";
 import { memo, useEffect, useState } from "react";
-import { concat, debounce, includes, isEmpty, without } from "lodash";
+import { debounce, includes, isEmpty } from "lodash";
 import { motion, type Variants } from "motion/react";
 import { Toolbar } from "@base-ui-components/react";
 import { LuSearch } from "react-icons/lu";
@@ -10,16 +10,17 @@ import { Card } from "../components/Card";
 import { useSessionData } from "../hooks/useSessionData";
 
 export const EditCards = memo(() => {
-  const { disabledCardIds, setDisabledCardIds } = useSessionData();
+  const { disabledCardIds, addDisabledCardId, delDisabledCardId } =
+    useSessionData();
   const [displayedCards, setDisplayedCards] = useState<CardType[]>(CARDS);
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleToggleCard = (id: string) => {
     if (disabledCardIds)
       if (includes(disabledCardIds, id)) {
-        setDisabledCardIds(without(disabledCardIds, id));
+        delDisabledCardId(id);
       } else {
-        setDisabledCardIds(concat(disabledCardIds, id));
+        addDisabledCardId(id);
       }
   };
 
@@ -75,7 +76,7 @@ export const EditCards = memo(() => {
           />
         </Toolbar.Group>
       </Toolbar.Root>
-      <div className="h-[70dvh] overflow-y-auto flex flex-col pr-2.5 -mr-2.5">
+      <div className="h-[70dvh] overflow-y-auto flex flex-col pr-2 -mr-2">
         <div className="h-5 shrink-0 sticky top-0 bg-gradient-to-b from-neutral-800/100 to-neutral-800/0 z-10" />
         {isEmpty(displayedCards) ? (
           <div className="grow flex justify-center items-center">

@@ -7,15 +7,15 @@ type Props = {
 };
 
 export const ResetSessionConfirmation = memo(({ onClose }: Props) => {
-  const { setActiveCardIds } = useSessionData();
+  const { clearActiveCardId } = useSessionData();
 
   const handleConfirm = () => {
-    setActiveCardIds([]);
+    clearActiveCardId();
     onClose();
   };
 
   return (
-    <div className="flex flex-col py-3 gap-4">
+    <div className="flex flex-col px-1 py-3 gap-4">
       <p className="text-neutral-400">
         Clear all cards and restart session. (Disabled cards will remain
         unchanged.)

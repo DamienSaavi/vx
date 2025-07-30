@@ -19,4 +19,6 @@
 
 :root {
   @apply bg-neutral-900 text-neutral-200 overflow-hidden select-none;
+  font-family: "Commissioner", sans-serif;
+  font-optical-sizing: auto;
 }

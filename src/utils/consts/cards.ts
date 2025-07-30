@@ -1,105 +1,119 @@
-import { uniqueId } from "lodash";
 import type { Card } from "../../models/types";
 
 export const ROMAN_NUMERALS = ["", "I", "II", "III", "IV", "V"];
-
 export const TIER_PROBABILITY = [8, 3, 1, 0];
 
 export const CARDS: Card[] = [
   {
-    id: uniqueId(),
+    id: "400ea339-ddcd-4e2f-95ba-3175c67d7f80",
     name: "Toe Dip",
     tier: 1,
     description:
       "You must touch a hold with your toe before moving your hand onto it.",
   },
   {
-    id: uniqueId(),
+    id: "8037eaba-237b-40f0-a5eb-9bbf685725b7",
     name: "Bat Hang",
     tier: 2,
     description: "Start the route in a bat hang.",
   },
   {
-    id: uniqueId(),
-    name: `The Way of the Bear`,
-    tier: 1,
+    id: "c57d4606-571f-469d-9b7d-d57ae16f1087",
+    name: `Way of the Bear`,
+    tier: 3,
     description: `Only use 4 fingers.`,
     setId: "animal-style",
   },
   {
-    id: uniqueId(),
-    name: `The Way of the Eagle`,
+    id: "6e4449f9-3c1f-40fd-8942-bb03820a1a1d",
+    name: `Way of the Eagle`,
     tier: 2,
     description: `Only use 3 fingers.`,
     setId: "animal-style",
   },
   {
-    id: uniqueId(),
-    name: `The Way of the Snake`,
+    id: "d1094733-95c6-45da-bb0c-37c67878256f",
+    name: `Way of the Snake`,
     tier: 3,
     description: `Only use 2 fingers.`,
     setId: "animal-style",
   },
   {
-    id: uniqueId(),
+    id: "2f8687c0-019d-4301-91c5-fce82c0d315d",
     name: `'Tis But a Scratch!`,
     tier: 2,
     description: `Use one hand only. Other hand cannot touch any holds.`,
   },
   {
-    id: uniqueId(),
+    id: "439a44d5-ed0d-432d-9812-7ce4cc986d08",
     name: `Hopscotch`,
     tier: 1,
     description: `Use one foot only. Other foot cannot touch any holds but you can still use it to smear or flag against the wall.`,
   },
   {
-    id: uniqueId(),
-    name: `Beam Me Up, Scottie!`,
-    tier: 3,
-    description: `Top out with a single move.`,
-  },
-  {
-    id: uniqueId(),
+    id: "a07f6309-bcf0-4b71-9456-a404a29a9ce9",
     name: `Prison Break`,
     tier: 1,
-    description: `Your hands must always match as if they're tied together.`,
+    description: `Your hands must always match -- as if they're tied together.`,
   },
   {
-    id: uniqueId(),
+    id: "87c15c66-3284-4aab-8dd6-783a10b64691",
     name: `Smooth Landing`,
     tier: 1,
     description: `After topping out, climb down to the start.`,
   },
   {
-    id: uniqueId(),
+    id: "f584b0e9-3e98-4963-94b5-e24650dd3db7",
     name: `Boulder Bro`,
     tier: 3,
     description: "Complete the route without letting your feet touch the wall.",
   },
   {
-    id: uniqueId(),
+    id: "c303cccd-2a3c-4df2-a2eb-ce66865e0944",
     name: `OCD`,
     tier: 1,
     description:
       "Touch all holds before completing the route. No need to establish a hold. Must use hand or finger.",
   },
   {
-    id: uniqueId(),
+    id: "118558ae-c323-4b1a-8882-e5a91681052c",
     name: "Mission Impossible",
     tier: 1,
     description:
       'Avoid making any noise while climbing. This includes scrapes, impacts, "hyugh 😩"s, etc.',
   },
   {
-    id: uniqueId(),
+    id: "a299c34d-1cf4-4cb6-b50c-1fa21e3d191b",
     name: `Cat Walk`,
     tier: 2,
     description:
-      "Your foot can only be placed on holds previously used as hand holds. You can still smear or flag against the wall.",
+      "Your foot can only be placed on holds previously used as hand holds. You can still smear or flag against the wall at any point.",
   },
-  // FUTURE IDEAS:
-  // - finish within n moves
-  // - sit start
-  // - knock first
-  // - foot eliminates holds from future use
+  {
+    id: "4f0cd206-98b3-46dd-9a7a-ee868f909b80",
+    name: `Rising Lava`,
+    tier: 1,
+    description:
+      "A hold can no longer be used once your foot leaves the hold -- as if the hold is destroyed.",
+  },
+  {
+    id: "528f0b80-d398-484c-9b58-22061bf281fc",
+    name: `Sit Start`,
+    tier: 1,
+    description: "Start the climb with a sit start.",
+  },
+  {
+    id: "9f47531d-069d-4269-bca2-c22e468a20e4",
+    name: `Backseat Climbing`,
+    tier: 3,
+    description:
+      "Ask someone for the beta and complete the route without deviating from it. (within reason, ofc)",
+  },
+  {
+    id: "0b76937f-84a2-47f5-b416-be6e95b42720",
+    name: `Budget Climbing`,
+    tier: 3,
+    description:
+      "Finish the route with fewer or equal moves to the V grade of the route. (e.g. V3 -> 3 or less moves to finish)",
+  },
 ];

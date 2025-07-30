@@ -1,5 +1,11 @@
-import clsx from "clsx";
-import { ROMAN_NUMERALS } from "../utils/consts/cards";
+import {
+  TbHelpHexagonFilled,
+  TbHexagonNumber1Filled,
+  TbHexagonNumber2Filled,
+  TbHexagonNumber3Filled,
+} from "react-icons/tb";
+import { memo } from "react";
+import colors from "tailwindcss/colors";
 
 type Props = {
   tier: number;
@@ -7,26 +13,35 @@ type Props = {
 };
 
 const colorMap: Record<number, string> = {
-  1: "text-emerald-600, bg-emerald-600",
-  2: "text-blue-500, bg-blue-500",
-  3: "text-amber-500, bg-amber-500",
+  1: colors.emerald[500],
+  2: colors.blue[500],
+  3: colors.amber[500],
 };
 
-const sizeMap: Record<string, string> = {
-  sm: "text-[8px] w-4",
-  md: "text-base w-7 text-shadow-sm",
+const sizeMap: Record<string, number> = {
+  sm: 18,
+  md: 32,
 };
 
-export const Tier = ({ tier, size = "md" }: Props) => {
+const getIcon = (tier: number) => {
+  switch (tier) {
+    case 1:
+      return TbHexagonNumber1Filled;
+    case 2:
+      return TbHexagonNumber2Filled;
+    case 3:
+      return TbHexagonNumber3Filled;
+    default:
+      return TbHelpHexagonFilled;
+  }
+};
+
+export const Tier = memo(({ tier, size = "md" }: Props) => {
+  const Icon = getIcon(tier);
+
   return (
-    <span
-      className={clsx(
-        "block font-serif font-bold text-white text-center rounded-full opacity-80 p-0.5 aspect-square",
-        colorMap[tier],
-        sizeMap[size],
-      )}
-    >
-      {ROMAN_NUMERALS[tier]}
-    </span>
+    <div>
+      <Icon fontSize={sizeMap[size]} color={colorMap[tier]} />
+    </div>
   );
-};
+});

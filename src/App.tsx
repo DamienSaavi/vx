@@ -1,18 +1,15 @@
+import { useEffect } from "react";
 import { Session } from "./containers/Session";
+import { useSessionData } from "./hooks/useSessionData";
 import { ScrollerRefProvider } from "./providers/ScrollerRefProvider";
 
 const App = () => {
-  // const toggleDisableCard = useCallback(
-  //   (id: string) => {
-  //     const isDisabled = disabledCardIds.includes(id);
-  //     if (isDisabled) {
-  //       setDisabledCardIds((prev) => uniq(prev.concat(id)));
-  //     } else {
-  //       setDisabledCardIds((prev) => prev.filter((cardId) => cardId !== id));
-  //     }
-  //   },
-  //   [disabledCardIds]
-  // );
+  const { removeInvalidCardIds } = useSessionData();
+
+  useEffect(() => {
+    removeInvalidCardIds();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ScrollerRefProvider>

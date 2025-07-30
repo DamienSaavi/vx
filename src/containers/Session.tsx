@@ -1,8 +1,8 @@
-import { HitMeButton } from "../components/DrawButton";
+import { DrawButton } from "../components/DrawButton";
 import { CurrentHand } from "./CurrentHand";
 import { CurrentCardsList } from "./CurrentCardsList";
 import { useCallback, useMemo, useState } from "react";
-import { filter, find, includes, inRange, random, sortBy, union } from "lodash";
+import { filter, find, includes, random, union } from "lodash";
 import { CARDS, TIER_PROBABILITY } from "../utils/consts/cards";
 import { Button } from "../components/Button";
 import { TbCardsFilled } from "react-icons/tb";
@@ -16,24 +16,26 @@ import { useSessionData } from "../hooks/useSessionData";
 import { TbPlayCardOff } from "react-icons/tb";
 import { TbList } from "react-icons/tb";
 import { AnimatePresence, motion } from "motion/react";
+import { TiInfoLarge } from "react-icons/ti";
+import { Info } from "./Info";
 export const Session = () => {
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isEditCardsModalOpen, setIsEditCardsModalOpen] = useState(false);
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const {
     disabledCardIds,
     activeCardIds,
     viewMode,
-    setActiveCardIds,
+    addActiveCardId,
+    delActiveCardId,
     setViewMode,
   } = useSessionData();
 
-  const cards = useMemo(
-    () =>
-      sortBy(activeCardIds.map((id) => CARDS.find((c) => c.id === id))).filter(
-        Boolean
-      ) as Card[],
-    [activeCardIds]
-  );
+  const cards = useMemo(() => {
+    return activeCardIds
+      .map((id) => CARDS.find((c) => c.id === id))
+      .filter(Boolean) as Card[];
+  }, [activeCardIds]);
 
   const options = useMemo(() => {
     const excludedSetIds = cards.map((card) => card.setId).filter(Boolean);
@@ -55,25 +57,26 @@ export const Session = () => {
       const prevCursor = cursor;
       cursor += TIER_PROBABILITY[option.tier];
       probabilityField.push([option.id, [prevCursor, cursor]]);
+      cursor += 1;
     }
 
     const targetPosition = random(0, cursor - 1, false);
     const selectedCardId = find(probabilityField, (item) => {
       const [, range] = item;
       const [from, to] = range;
-      return inRange(targetPosition, from, to);
+      return targetPosition >= from && targetPosition <= to;
     })?.[0];
 
     if (!selectedCardId) {
       throw new Error("Failed to pick card ID.");
     }
 
-    setActiveCardIds(activeCardIds.concat(selectedCardId));
-  }, [activeCardIds, options, setActiveCardIds]);
+    addActiveCardId(selectedCardId);
+  }, [addActiveCardId, options]);
 
   const handleDiscard = useCallback(
-    (id: string) => setActiveCardIds(activeCardIds.filter((_id) => _id !== id)),
-    [activeCardIds, setActiveCardIds]
+    (id: string) => delActiveCardId(id),
+    [delActiveCardId]
   );
 
   const handleToggleView = useCallback(() => {
@@ -100,9 +103,9 @@ export const Session = () => {
           color="secondary"
           shape="round"
           label="Reset"
-          onClick={() => setIsResetModalOpen((p) => !p)}
+          onClick={() => setIsInfoModalOpen((p) => !p)}
         >
-          <RiResetLeftLine color={colors.slate[300]} />
+          <TiInfoLarge color={colors.slate[300]} />
         </Button>
       </div>
       <div className="flex flex-col grow min-h-0 h-0 items-center w-full">
@@ -146,9 +149,20 @@ export const Session = () => {
             </AnimatePresence>
           </Button>
         </div>
-        <HitMeButton onClick={handleDraw} />
+        <DrawButton onClick={handleDraw} />
+        <div className="absolute right-5">
+          <Button
+            size="lg"
+            variant="text"
+            color="danger"
+            shape="round"
+            label="Reset"
+            onClick={() => setIsResetModalOpen((p) => !p)}
+          >
+            <RiResetLeftLine />
+          </Button>
+        </div>
       </div>
-
       <Modal
         open={isResetModalOpen}
         setOpen={setIsResetModalOpen}
@@ -163,6 +177,9 @@ export const Session = () => {
         title="Modify Deck"
       >
         <EditCards />
+      </Modal>
+      <Modal open={isInfoModalOpen} setOpen={setIsInfoModalOpen} title="Info">
+        <Info />
       </Modal>
     </div>
   );

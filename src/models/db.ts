@@ -1,15 +1,18 @@
 import Dexie, { type EntityTable } from "dexie";
-import type { CardItem, SessionDataItem } from "./types";
+import type { ActiveCard, Card, DisabledCard, Setting } from "./types";
 
 const db = new Dexie("vxDatabase") as Dexie & {
-  cards: EntityTable<CardItem, "id">;
-  sessionData: EntityTable<SessionDataItem, "key">;
+  cards: EntityTable<Card, "id">;
+  activeCardIds: EntityTable<ActiveCard, "id">;
+  disabledCardIds: EntityTable<DisabledCard, "id">;
+  settings: EntityTable<Setting, "key">;
 };
 
 db.version(1).stores({
   cards: "&id",
-  sessionData: "&key",
+  activeCardIds: "++idx, &id",
+  disabledCardIds: "&id",
+  settings: "&key",
 });
 
-export type { CardItem, SessionDataItem };
 export { db };

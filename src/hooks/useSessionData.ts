@@ -1,44 +1,76 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../models/db";
-import type { SessionData } from "../models/types";
-
-const defaultSessionData: SessionData = {
-  activeCardIds: [],
-  disabledCardIds: [],
-  viewMode: "cards",
-};
+import type { ViewMode } from "../models/types";
+import { CARDS } from "../utils/consts/cards";
+import { useCallback } from "react";
 
 export const useSessionData = () => {
-  const sessionData = useLiveQuery(async () => {
-    const data: Record<keyof SessionData, unknown> = { ...defaultSessionData };
-    await db.sessionData.each((item) => (data[item.key] = item.value));
-    return data as SessionData;
+  const activeCardIds = useLiveQuery(async () => {
+    return (await db.activeCardIds.orderBy("idx").toArray()).map(
+      ({ id }) => id
+    );
   });
 
-  const setActiveCardIds = async (ids: string[]) => {
-    await db.sessionData.put(
-      { key: "activeCardIds", value: ids },
-      "activeCardIds"
-    );
-  };
+  const disabledCardIds = useLiveQuery(async () => {
+    return (await db.disabledCardIds.toArray()).map(({ id }) => id);
+  });
 
-  const setDisabledCardIds = async (ids: string[]) => {
-    await db.sessionData.put(
-      { key: "disabledCardIds", value: ids },
-      "disabledCardIds"
-    );
-  };
+  const viewMode = useLiveQuery(async () => {
+    const data = await db.settings.get("viewMode");
+    return (data?.value || "cards") as ViewMode;
+  });
 
-  const setViewMode = async (viewMode: SessionData["viewMode"]) => {
-    await db.sessionData.put({ key: "viewMode", value: viewMode }, "viewMode");
-  };
+  const addActiveCardId = useCallback(async (id: string) => {
+    await db.activeCardIds.add({ id });
+  }, []);
+
+  const delActiveCardId = useCallback(async (id: string) => {
+    await db.activeCardIds.where({ id: id }).delete();
+  }, []);
+
+  const clearActiveCardId = useCallback(async () => {
+    await db.activeCardIds.clear();
+  }, []);
+
+  const addDisabledCardId = useCallback(async (id: string) => {
+    await db.disabledCardIds.add({ id });
+  }, []);
+
+  const delDisabledCardId = useCallback(async (id: string) => {
+    await db.disabledCardIds.delete(id);
+  }, []);
+
+  const setViewMode = useCallback(async (viewMode: ViewMode) => {
+    console.log(viewMode);
+    await db.settings.put({ key: "viewMode", value: viewMode }, "viewMode");
+  }, []);
+
+  const removeInvalidCardIds = useCallback(async () => {
+    const activeCardIds = await db.activeCardIds.orderBy("idx").toArray();
+    const disabledCardIds = await db.disabledCardIds.toArray();
+
+    const validIds = CARDS.map((c) => c.id);
+
+    await db.activeCardIds.clear();
+    await db.disabledCardIds.clear();
+    await db.activeCardIds.bulkPut(
+      activeCardIds.filter(({ id }) => validIds.includes(id))
+    );
+    await db.disabledCardIds.bulkPut(
+      disabledCardIds.filter(({ id }) => validIds.includes(id))
+    );
+  }, []);
 
   return {
-    activeCardIds: sessionData?.activeCardIds || [],
-    disabledCardIds: sessionData?.disabledCardIds || [],
-    viewMode: sessionData?.viewMode || "cards",
-    setActiveCardIds,
-    setDisabledCardIds,
+    activeCardIds: activeCardIds || [],
+    disabledCardIds: disabledCardIds || [],
+    viewMode: viewMode || "cards",
+    addActiveCardId,
+    delActiveCardId,
+    clearActiveCardId,
+    addDisabledCardId,
+    delDisabledCardId,
     setViewMode,
+    removeInvalidCardIds,
   };
 };
