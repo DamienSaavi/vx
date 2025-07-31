@@ -2,9 +2,9 @@ import { TbList, TbPlayCardOff } from "react-icons/tb";
 
 export const Info = () => {
   return (
-    <div className="relative h-[80dvh] px-1.5 pr-3 -mr-2 text-sm overflow-y-auto">
+    <div className="relative h-[80dvh] px-1.5 pr-3 -mr-2 text-md overflow-y-auto">
       <div className="h-8 shrink-0 sticky top-0 bg-gradient-to-b from-neutral-800/100 to-neutral-800/0 z-10" />
-      <h3 className="text-base font-bold text-center pb-3 cursor-pointer italic">
+      <h3 className="text-xl font-bold text-center pb-3 cursor-pointer italic">
         What is this?
       </h3>
       <div className="flex flex-col gap-3">
@@ -31,7 +31,7 @@ export const Info = () => {
         </p>
       </div>
 
-      <h3 className="text-base font-bold pt-8 text-center pb-3 cursor-pointer italic">
+      <h3 className="text-xl font-bold pt-8 text-center pb-3 cursor-pointer italic">
         How do I use it?
       </h3>
 
@@ -86,7 +86,7 @@ export const Info = () => {
         </p>
       </div>
 
-      <h3 className="text-base font-bold pt-8 text-center pb-3 cursor-pointer italic">
+      <h3 className="text-xl font-bold pt-8 text-center pb-3 cursor-pointer italic">
         I have suggestions!
       </h3>
 

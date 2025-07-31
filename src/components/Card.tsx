@@ -10,16 +10,28 @@ type Props = {
 
 export const Card = memo(({ card, compact }: Props) => {
   return (
-    <div className="flex flex-col gap-2 justify-center text-neutral-900 bg-neutral-50 border border-neutral-200 rounded-2xl shadow-md p-2 relative min-h-0 aspect-2/3">
+    <div
+      className={clsx(
+        "flex flex-col justify-center text-neutral-900 bg-neutral-50 border border-neutral-200 rounded-2xl shadow-md relative min-h-0 aspect-2/3",
+        compact ? "p-2 gap-2" : "p-4 gap-4"
+      )}
+    >
       <h6
         className={clsx(
           "font-extrabold font-serif text-center",
-          compact ? "text-xl/5" : "text-2xl/6"
+          compact ? "text-xl/5" : "text-3xl/6"
         )}
       >
         {card.name}
       </h6>
-      <p className="text-xs text-center">{card.description}</p>
+      <p
+        className={clsx(
+          "text-center leading-4.5",
+          compact ? "text-sm" : "text-sm"
+        )}
+      >
+        {card.description}
+      </p>
       <div className="absolute top-1 left-1">
         <Tier tier={card.tier} />
       </div>
