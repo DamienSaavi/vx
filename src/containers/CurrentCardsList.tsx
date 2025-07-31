@@ -39,14 +39,20 @@ export const CurrentCardsList = ({ cards, onDiscard }: Props) => {
         <AnimatePresence>
           {cardsReversed.map((card, idx) => (
             <motion.li
-              initial={{ height: 0, opacity: 0 }}
+              initial={{
+                x: "-100dvw",
+                height: 0,
+                opacity: 0,
+              }}
               animate={{
+                x: 0,
                 height: "auto",
                 opacity: 1,
                 transition: { duration: 0.3, ease: "easeInOut" },
               }}
               exit={{
                 x: "-100dvw",
+                height: 0,
                 opacity: 0,
                 transition: { duration: 0.3, ease: "easeInOut" },
               }}
@@ -56,9 +62,9 @@ export const CurrentCardsList = ({ cards, onDiscard }: Props) => {
               <AnimatePresence>
                 {showActionsOnIdx === idx && (
                   <motion.div
-                    className="overflow-clip"
+                    className="overflow-visible"
                     initial={{ width: 0, x: -100 }}
-                    animate={{ width: "auto", x: 0 }}
+                    animate={{ width: "fit-content", x: 0 }}
                     exit={{ width: 0, x: -100 }}
                     transition={{ type: "spring", stiffness: 500, damping: 40 }}
                   >
@@ -80,7 +86,7 @@ export const CurrentCardsList = ({ cards, onDiscard }: Props) => {
                   setShowActionsOnIdx((prev) => (prev === idx ? -1 : idx))
                 }
               >
-                <h6 className="flex items-center gap-2 pb-1 font-semibold">
+                <h6 className="flex items-center gap-2 pb-1 font-semibold text-lg">
                   {card.name}
                   <Tier tier={card.tier} size="sm" />
                 </h6>

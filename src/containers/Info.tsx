@@ -2,7 +2,7 @@ import { TbList, TbPlayCardOff } from "react-icons/tb";
 
 export const Info = () => {
   return (
-    <div className="relative max-h-[700px] px-1.5 pr-3 -mr-2 text-sm overflow-y-auto">
+    <div className="relative h-[80dvh] px-1.5 pr-3 -mr-2 text-sm overflow-y-auto">
       <div className="h-8 shrink-0 sticky top-0 bg-gradient-to-b from-neutral-800/100 to-neutral-800/0 z-10" />
       <h3 className="text-base font-bold text-center pb-3 cursor-pointer italic">
         What is this?

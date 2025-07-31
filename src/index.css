@@ -1,5 +1,30 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Cormorant Upright";
+  src: url(./assets/fonts/Cormorant_Upright/CormorantUpright-Bold.ttf)
+    format("truetype");
+}
+
+@font-face {
+  font-family: "Inclusive Sans";
+  src: url(src/assets/fonts/Inclusive_Sans/InclusiveSans-Italic-VariableFont_wght.ttf)
+    format("truetype");
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Inclusive Sans";
+  src: url(src/assets/fonts/Inclusive_Sans/InclusiveSans-VariableFont_wght.ttf)
+    format("truetype");
+  font-style: normal;
+}
+
+@theme {
+  --font-serif: "Cormorant Upright", "Inclusive Sans", sans-serif;
+  --font-sans: "Inclusive Sans", sans-serif;
+}
+
 @utility no-scrollbar {
   @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
 }
@@ -18,7 +43,5 @@
 }
 
 :root {
-  @apply bg-neutral-900 text-neutral-200 overflow-hidden select-none;
-  font-family: "Commissioner", sans-serif;
-  font-optical-sizing: auto;
+  @apply bg-neutral-900 text-neutral-200 overflow-hidden select-none font-sans;
 }

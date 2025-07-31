@@ -1,6 +1,5 @@
 import type { Card } from "../../models/types";
 
-export const ROMAN_NUMERALS = ["", "I", "II", "III", "IV", "V"];
 export const TIER_PROBABILITY = [8, 3, 1, 0];
 
 export const CARDS: Card[] = [
@@ -114,6 +113,6 @@ export const CARDS: Card[] = [
     name: `Budget Climbing`,
     tier: 3,
     description:
-      "Finish the route with fewer or equal moves to the V grade of the route. (e.g. V3 -> 3 or less moves to finish)",
+      "Finish the route with fewer or equal moves to the V grade of the route plus 1. (e.g. V3 -> 4 or less moves to finish)",
   },
 ];

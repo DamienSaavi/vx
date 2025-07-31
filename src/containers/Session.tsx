@@ -115,7 +115,7 @@ export const Session = () => {
           <CurrentCardsList cards={cards} onDiscard={handleDiscard} />
         )}
       </div>
-      <div className="relative flex items-center justify-center shrink-0 grow-0 pb-6 pt-4 px-3 gap-4">
+      <div className="relative flex items-center justify-center shrink-0 grow-0 pb-10 pt-4 px-3 gap-4">
         <div className="absolute left-5">
           <Button
             variant="text"
@@ -163,6 +163,7 @@ export const Session = () => {
           </Button>
         </div>
       </div>
+
       <Modal
         open={isResetModalOpen}
         setOpen={setIsResetModalOpen}

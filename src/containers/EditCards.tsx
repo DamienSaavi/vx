@@ -57,8 +57,8 @@ export const EditCards = memo(() => {
   };
 
   return (
-    <div className="max-h-full w-full">
-      <Toolbar.Root className="z-10 bg-neutral-800 py-2 pt-3">
+    <div className="w-full">
+      <Toolbar.Root className="z-10 bg-neutral-800 py-3">
         <Toolbar.Group
           aria-label="Search"
           className="flex items-center gap-3 relative"
@@ -76,8 +76,7 @@ export const EditCards = memo(() => {
           />
         </Toolbar.Group>
       </Toolbar.Root>
-      <div className="h-[70dvh] overflow-y-auto flex flex-col pr-2 -mr-2">
-        <div className="h-5 shrink-0 sticky top-0 bg-gradient-to-b from-neutral-800/100 to-neutral-800/0 z-10" />
+      <div className="h-[70dvh] overflow-y-auto flex flex-col py-2 pr-2 -mr-2">
         {isEmpty(displayedCards) ? (
           <div className="grow flex justify-center items-center">
             <span className="text-neutral-400 text-center">
@@ -96,12 +95,11 @@ export const EditCards = memo(() => {
                 variants={variants}
                 onClick={() => handleToggleCard(card.id)}
               >
-                <Card card={card} />
+                <Card card={card} compact />
               </motion.div>
             ))}
           </div>
         )}
-        <div className="h-5 shrink-0 sticky bottom-0 bg-gradient-to-t from-neutral-800/100 to-neutral-800/0 z-10" />
       </div>
     </div>
   );
