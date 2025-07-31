@@ -41,7 +41,6 @@ export const useSessionData = () => {
   }, []);
 
   const setViewMode = useCallback(async (viewMode: ViewMode) => {
-    console.log(viewMode);
     await db.settings.put({ key: "viewMode", value: viewMode }, "viewMode");
   }, []);
 
