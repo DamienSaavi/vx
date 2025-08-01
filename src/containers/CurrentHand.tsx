@@ -45,13 +45,13 @@ const CardAnimated = memo(
   }) => {
     const variants: Variants = {
       before: {
-        scale: 0.8 - Math.abs(idx - activeIdx) * 0.01,
+        scale: 0.8 - Math.abs(idx - activeIdx) * 0.02,
         zIndex: 0,
         opacity: 1,
         y: 0,
       },
       after: {
-        scale: 0.8 - Math.abs(idx - activeIdx) * 0.01,
+        scale: 0.8 - Math.abs(idx - activeIdx) * 0.02,
         zIndex: 20 - idx,
         opacity: 1,
         y: 0,
@@ -86,7 +86,7 @@ const CardAnimated = memo(
         switch (state) {
           case "before":
           case "after":
-            return 3 * (idx - activeIdx);
+            return clamp(3 * (idx - activeIdx), -30, 30);
           default:
             return -0.05 * value;
         }

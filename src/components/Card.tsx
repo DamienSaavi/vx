@@ -12,21 +12,21 @@ export const Card = memo(({ card, compact }: Props) => {
   return (
     <div
       className={clsx(
-        "flex flex-col justify-center text-neutral-900 bg-neutral-50 border border-neutral-200 rounded-2xl shadow-md relative min-h-0 aspect-2/3",
+        "flex flex-col justify-center bg-gradient-to-t from-neutral-200 to-white border border-neutral-300 rounded-2xl shadow-md relative min-h-0 aspect-2/3",
         compact ? "p-2 gap-2" : "p-4 gap-4"
       )}
     >
       <h6
         className={clsx(
-          "font-extrabold font-serif text-center",
-          compact ? "text-xl/5" : "text-3xl/6"
+          "font-extrabold font-serif text-center text-shadow-sm text-neutral-800",
+          compact ? "text-xl/6" : "text-3xl/8"
         )}
       >
         {card.name}
       </h6>
       <p
         className={clsx(
-          "text-center leading-4.5",
+          "text-center leading-4.5 text-neutral-600",
           compact ? "text-sm" : "text-sm"
         )}
       >

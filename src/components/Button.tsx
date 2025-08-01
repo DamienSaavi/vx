@@ -23,17 +23,17 @@ type Props = PropsWithChildren & {
 
 const colorsMap: Record<Color, Record<Variant, string>> = {
   primary: {
-    filled: colors.sky[700],
+    filled: [colors.sky[700], colors.sky[600]].join(","),
     outlined: colors.sky[400],
     text: colors.sky[400],
   },
   secondary: {
-    filled: colors.slate[700],
+    filled: [colors.slate[700], colors.slate[600]].join(","),
     outlined: colors.slate[400],
     text: colors.slate[400],
   },
   danger: {
-    filled: colors.red[700],
+    filled: [colors.red[700], colors.red[600]].join(","),
     outlined: colors.red[400],
     text: colors.red[400],
   },
@@ -67,8 +67,9 @@ export const Button = memo(
           };
         default:
           return {
+            borderWidth: 0,
             borderColor: "transparent",
-            backgroundColor: colorsMap[color][variant],
+            backgroundImage: `linear-gradient(0deg,${colorsMap[color][variant]})`,
           };
       }
     };
