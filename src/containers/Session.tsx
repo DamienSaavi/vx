@@ -2,7 +2,7 @@ import { DrawButton } from "../components/DrawButton";
 import { CurrentHand } from "./CurrentHand";
 import { CurrentCardsList } from "./CurrentCardsList";
 import { useCallback, useMemo, useState } from "react";
-import { filter, find, includes, random, union } from "lodash";
+import { filter, find, includes, isEmpty, random, union } from "lodash";
 import { CARDS, TIER_PROBABILITY } from "../utils/consts/cards";
 import { Button } from "../components/Button";
 import { TbCardsFilled } from "react-icons/tb";
@@ -12,24 +12,22 @@ import { Modal } from "../components/Modal";
 import type { Card } from "../models/types";
 import { ResetSessionConfirmation } from "./ResetSessionConfirmation";
 import { RiResetLeftLine } from "react-icons/ri";
-import { useSessionData } from "../hooks/useSessionData";
 import { TbPlayCardOff } from "react-icons/tb";
 import { TbList } from "react-icons/tb";
 import { AnimatePresence, motion } from "motion/react";
 import { TiInfoLarge } from "react-icons/ti";
 import { Info } from "./Info";
+import { Badge } from "../components/Badge";
+import { useDisabledCards } from "../hooks/useDisabledCards";
+import { useActiveCards } from "../hooks/useActiveCards";
+import { useSettings } from "../hooks/useSettings";
 export const Session = () => {
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isEditCardsModalOpen, setIsEditCardsModalOpen] = useState(false);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
-  const {
-    disabledCardIds,
-    activeCardIds,
-    viewMode,
-    addActiveCardId,
-    delActiveCardId,
-    setViewMode,
-  } = useSessionData();
+  const { activeCardIds, addActiveCardId, delActiveCardId } = useActiveCards();
+  const { disabledCardIds } = useDisabledCards();
+  const { viewMode, setViewMode } = useSettings();
 
   const cards = useMemo(() => {
     return activeCardIds
@@ -50,7 +48,6 @@ export const Session = () => {
 
   const handleDraw = useCallback(() => {
     const probabilityField: [string, [number, number]][] = [];
-
     let cursor = 0;
     for (let i = 0; i < options.length; i++) {
       const option = options[i];
@@ -87,16 +84,24 @@ export const Session = () => {
   return (
     <div className="relative w-screen flex flex-col min-h-0 h-dvh max-h-dvh items-stretch bg-neutral-900">
       <div className="flex grow-0 shrink-0 justify-between p-4">
-        <Button
-          size="lg"
-          variant="outlined"
-          color="secondary"
-          shape="round"
-          label="Modify Deck"
-          onClick={() => setIsEditCardsModalOpen((p) => !p)}
+        <Badge
+          content={
+            disabledCardIds.length
+              ? disabledCardIds.length.toString()
+              : undefined
+          }
         >
-          <TbPlayCardOff color={colors.slate[300]} />
-        </Button>
+          <Button
+            size="lg"
+            variant="outlined"
+            color="secondary"
+            shape="round"
+            label="Modify Deck"
+            onClick={() => setIsEditCardsModalOpen((p) => !p)}
+          >
+            <TbPlayCardOff size={28} color={colors.slate[300]} />
+          </Button>
+        </Badge>
         <Button
           size="lg"
           variant="outlined"
@@ -105,7 +110,7 @@ export const Session = () => {
           label="Reset"
           onClick={() => setIsInfoModalOpen((p) => !p)}
         >
-          <TiInfoLarge color={colors.slate[300]} />
+          <TiInfoLarge size={28} color={colors.slate[300]} />
         </Button>
       </div>
       <div className="flex flex-col grow min-h-0 h-0 items-center w-full">
@@ -149,7 +154,7 @@ export const Session = () => {
             </AnimatePresence>
           </Button>
         </div>
-        <DrawButton onClick={handleDraw} />
+        <DrawButton onClick={handleDraw} outOfCards={isEmpty(options)} />
         <div className="absolute right-5">
           <Button
             size="lg"

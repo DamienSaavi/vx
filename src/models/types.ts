@@ -1,4 +1,4 @@
-type CardTier = 1 | 2 | 3;
+type CardTier = 1 | 2 | 3 | 0;
 
 export type Card = {
   id: string;

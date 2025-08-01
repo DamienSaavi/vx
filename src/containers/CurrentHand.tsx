@@ -45,23 +45,23 @@ const CardAnimated = memo(
   }) => {
     const variants: Variants = {
       before: {
-        scale: 0.8 - Math.abs(idx - activeIdx) * 0.02,
+        scale: 0.7 - Math.abs(idx - activeIdx) * 0.02,
         zIndex: 0,
         opacity: 1,
         y: 0,
       },
       after: {
-        scale: 0.8 - Math.abs(idx - activeIdx) * 0.02,
+        scale: 0.7 - Math.abs(idx - activeIdx) * 0.02,
         zIndex: 20 - idx,
         opacity: 1,
         y: 0,
       },
       current: {
-        scale: 1.1,
+        scale: 1,
         zIndex: 20,
         opacity: 1,
         y: showActions ? -30 : 0,
-        boxShadow: "0px 0px 16px 16px rgba(0,0,0,0.2)",
+        boxShadow: "0px 0px 24px 24px rgba(0,0,0,0.4)",
       },
     };
 
@@ -102,7 +102,7 @@ const CardAnimated = memo(
         exit={{ opacity: 0, y: 200 }}
         style={{ x, rotateZ }}
         transition={transition}
-        className="absolute h-[50dvh] max-h-[100vw] aspect-2/3 rounded-2xl"
+        className="absolute h-[60dvh] max-h-[110vw] aspect-2/3 rounded-2xl"
       >
         <AnimatePresence>
           {state === "current" && showActions && (

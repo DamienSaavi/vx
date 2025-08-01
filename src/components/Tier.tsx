@@ -1,8 +1,8 @@
 import {
-  TbHelpHexagonFilled,
   TbHexagonNumber1Filled,
   TbHexagonNumber2Filled,
   TbHexagonNumber3Filled,
+  TbCampfireFilled,
 } from "react-icons/tb";
 import { memo } from "react";
 import colors from "tailwindcss/colors";
@@ -13,6 +13,7 @@ type Props = {
 };
 
 const colorMap: Record<number, string> = {
+  0: colors.orange[500],
   1: colors.emerald[500],
   2: colors.blue[500],
   3: colors.amber[500],
@@ -20,7 +21,7 @@ const colorMap: Record<number, string> = {
 
 const sizeMap: Record<string, number> = {
   sm: 18,
-  md: 32,
+  md: 38,
 };
 
 const getIcon = (tier: number) => {
@@ -32,7 +33,7 @@ const getIcon = (tier: number) => {
     case 3:
       return TbHexagonNumber3Filled;
     default:
-      return TbHelpHexagonFilled;
+      return TbCampfireFilled;
   }
 };
 

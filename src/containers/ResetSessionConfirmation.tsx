@@ -1,16 +1,16 @@
 import { memo } from "react";
 import { Button } from "../components/Button";
-import { useSessionData } from "../hooks/useSessionData";
+import { useActiveCards } from "../hooks/useActiveCards";
 
 type Props = {
   onClose: () => void;
 };
 
 export const ResetSessionConfirmation = memo(({ onClose }: Props) => {
-  const { clearActiveCardId } = useSessionData();
+  const { clearActiveCardIds } = useActiveCards();
 
   const handleConfirm = () => {
-    clearActiveCardId();
+    clearActiveCardIds();
     onClose();
   };
 

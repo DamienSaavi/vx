@@ -46,7 +46,7 @@ export const TextField = memo(
       min={min}
       max={max}
       className={clsx(
-        "select-all min-h-12 w-auto min-w-12 px-3 bg-neutral-700 border border-neutral-600 rounded-lg no-spinner outline-0 focus:outline focus:border-slate-500 focus:outline-slate-500",
+        "min-h-12 w-auto min-w-0 px-3 bg-neutral-700 border border-neutral-600 rounded-lg no-spinner outline-0 focus:outline focus:border-slate-500 focus:outline-slate-500",
         textCenter && "text-center",
         fullWidth ? "grow" : width ? `w-[${width}rem]` : ""
       )}

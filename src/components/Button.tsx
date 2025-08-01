@@ -29,8 +29,8 @@ const colorsMap: Record<Color, Record<Variant, string>> = {
   },
   secondary: {
     filled: [colors.slate[700], colors.slate[600]].join(","),
-    outlined: colors.slate[400],
-    text: colors.slate[400],
+    outlined: colors.slate[300],
+    text: colors.slate[300],
   },
   danger: {
     filled: [colors.red[700], colors.red[600]].join(","),
@@ -83,7 +83,7 @@ export const Button = memo(
         initial={{ scale: 1 }}
         whileTap={{ scale: 0.9 }}
         className={clsx(
-          "flex items-center gap-2 cursor-pointer font-semibold border pointer-events-auto",
+          "flex items-center gap-2 cursor-pointer font-semibold border pointer-events-auto whitespace-nowrap",
           shape === "square" ? "rounded-lg px-3 py-2" : "rounded-full p-2",
           size === "sm" ? "text-sm" : size === "lg" ? "text-2xl" : "text-base"
         )}
