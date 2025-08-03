@@ -23,7 +23,12 @@ type Props = {
   onDiscard: (id: string) => void;
 };
 
-const transition: Transition = { type: "spring", stiffness: 700, damping: 50 };
+const transition: Transition = {
+  type: "spring",
+  bounce: 0,
+  duration: 0.5,
+  rotateZ: { duration: 0 },
+};
 
 const CardAnimated = memo(
   ({
@@ -37,7 +42,7 @@ const CardAnimated = memo(
   }: {
     idx: number;
     card: CardType;
-    state: "before" | "after" | "current";
+    state: "before" | "after" | "current" | "new";
     activeIdx: number;
     offsetX: MotionValue<number>;
     showActions: boolean;
@@ -45,21 +50,24 @@ const CardAnimated = memo(
   }) => {
     const variants: Variants = {
       before: {
-        scale: 0.7 - Math.abs(idx - activeIdx) * 0.02,
+        scale: 0.8 - Math.abs(idx - activeIdx) * 0.02,
         zIndex: 0,
         opacity: 1,
+        rotateZ: clamp(3 * (idx - activeIdx), -30, 30),
         y: 0,
       },
       after: {
-        scale: 0.7 - Math.abs(idx - activeIdx) * 0.02,
+        scale: 0.8 - Math.abs(idx - activeIdx) * 0.02,
         zIndex: 20 - idx,
         opacity: 1,
+        rotateZ: clamp(3 * (idx - activeIdx), -30, 30),
         y: 0,
       },
       current: {
         scale: 1,
         zIndex: 20,
         opacity: 1,
+        rotateZ: 0,
         y: showActions ? -30 : 0,
         boxShadow: "0px 0px 24px 24px rgba(0,0,0,0.4)",
       },
@@ -75,20 +83,7 @@ const CardAnimated = memo(
           case "after":
             return 50 + 16 * (idx - activeIdx);
           default:
-            return 0.25 * -value;
-        }
-      }),
-      { bounce: 0, duration: 200 }
-    );
-
-    const rotateZ = useSpring(
-      useTransform(offsetX, (value) => {
-        switch (state) {
-          case "before":
-          case "after":
-            return clamp(3 * (idx - activeIdx), -30, 30);
-          default:
-            return -0.05 * value;
+            return 0.3 * -value;
         }
       }),
       { bounce: 0, duration: 200 }
@@ -98,9 +93,9 @@ const CardAnimated = memo(
       <motion.div
         animate={state}
         variants={variants}
-        initial={{ opacity: 0, y: 200, scale: 0.7 }}
+        initial={{ opacity: 0, y: 200, scale: 0.8 }}
         exit={{ opacity: 0, y: 200 }}
-        style={{ x, rotateZ }}
+        style={{ x }}
         transition={transition}
         className="absolute h-[60dvh] max-h-[110vw] aspect-2/3 rounded-2xl"
       >
