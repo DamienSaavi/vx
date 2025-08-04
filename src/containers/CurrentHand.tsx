@@ -193,12 +193,12 @@ const HandControls = memo(
     onSelectNext?: () => void;
   }) => {
     return (
-      <div className="flex absolute justify-between w-full pointer-events-none h-[50dvh]">
+      <div className="flex absolute justify-between items-center w-full pointer-events-none h-[50dvh]">
         <button
           onClick={onSelectPrev}
           aria-label="Previous Card"
           className={clsx(
-            "flex justify-start items-center px-2 cursor-pointer transition-opacity duration-200 pointer-events-auto w-1/6 min-h-full opacity-0 z-20",
+            "flex justify-start items-center p-2 cursor-pointer transition-opacity duration-200 pointer-events-auto w-fit h-fit outline opacity-0 z-20",
             onSelectPrev && "opacity-90"
           )}
         >
@@ -210,7 +210,7 @@ const HandControls = memo(
           onClick={onSelectNext}
           aria-label="Next Card"
           className={clsx(
-            "flex justify-end items-center px-2 cursor-pointer transition-opacity duration-200 pointer-events-auto w-1/6 min-h-full opacity-0 z-20",
+            "flex justify-end items-center px-2 cursor-pointer transition-opacity duration-200 pointer-events-auto w-fit h-fit outline opacity-0 z-20",
             onSelectNext && "opacity-90"
           )}
         >
