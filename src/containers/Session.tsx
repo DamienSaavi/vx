@@ -82,7 +82,7 @@ export const Session = () => {
   }, [setViewMode, viewMode]);
 
   return (
-    <div className="relative w-screen flex flex-col min-h-0 h-dvh max-h-dvh items-stretch bg-neutral-900">
+    <div className="relative w-screen flex flex-col min-h-0 h-dvh max-h-dvh items-stretch bg-neutral-900 touch-pan-x">
       <div className="flex grow-0 shrink-0 justify-between p-4">
         <Badge
           content={

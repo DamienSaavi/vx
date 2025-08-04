@@ -23,7 +23,7 @@ export const Modal = memo(
             <Dialog.Portal keepMounted>
               <BackdropAnimated
                 initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-                animate={{ opacity: 1, backdropFilter: "blur(8px)" }}
+                animate={{ opacity: 1, backdropFilter: "blur(2px)" }}
                 exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
                 className="absolute top-0 right-0 bottom-0 left-0 bg-neutral-900/90 z-50"
               />
@@ -34,7 +34,7 @@ export const Modal = memo(
                 className="absolute top-0 w-full h-full flex justify-center items-center p-3 z-50 pointer-events-none"
               >
                 <div
-                  className="flex flex-col grow min-w-0 min-h-0 max-h-[calc(100dvh-24px)] items-stretch p-0 bg-neutral-800 rounded-xl border border-neutral-700 shadow-xl pointer-events-auto"
+                  className="flex flex-col grow min-w-0 min-h-0 max-h-[calc(100dvh-96px)] mb-12 items-stretch p-0 bg-neutral-800 rounded-xl border border-neutral-700 shadow-xl pointer-events-auto"
                   style={{ maxWidth }}
                 >
                   <div className="relative flex items-center justify-center m-3">
@@ -46,7 +46,7 @@ export const Modal = memo(
                     </Dialog.Close>
                   </div>
                   <Divider px={0.5} />
-                  <div className="px-2">
+                  <div className="px-2 flex flex-col min-h-0 grow">
                   {children}
                   </div>
                 </div>

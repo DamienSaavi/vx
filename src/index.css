@@ -2,20 +2,20 @@
 
 @font-face {
   font-family: "Cormorant Upright";
-  src: url(./assets/fonts/Cormorant_Upright/CormorantUpright-Bold.ttf)
+  src: url(/fonts/Cormorant_Upright/CormorantUpright-Bold.ttf)
     format("truetype");
 }
 
 @font-face {
   font-family: "Inclusive Sans";
-  src: url(src/assets/fonts/Inclusive_Sans/InclusiveSans-Italic-VariableFont_wght.ttf)
+  src: url(/fonts/Inclusive_Sans/InclusiveSans-Italic-VariableFont_wght.ttf)
     format("truetype");
   font-style: italic;
 }
 
 @font-face {
   font-family: "Inclusive Sans";
-  src: url(src/assets/fonts/Inclusive_Sans/InclusiveSans-VariableFont_wght.ttf)
+  src: url(/fonts/Inclusive_Sans/InclusiveSans-VariableFont_wght.ttf)
     format("truetype");
   font-style: normal;
 }

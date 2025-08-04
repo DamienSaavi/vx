@@ -1,11 +1,6 @@
 import { CARDS } from "../utils/consts/cards";
-import { memo, useEffect, useState } from "react";
-import {
-  debounce,
-  includes,
-  isEmpty,
-  orderBy,
-} from "lodash";
+import { memo, useCallback, useEffect, useState } from "react";
+import { debounce, includes, isEmpty, orderBy } from "lodash";
 import { motion, type Variants } from "motion/react";
 import { Toolbar } from "@base-ui-components/react";
 import { LuSearch } from "react-icons/lu";
@@ -25,6 +20,27 @@ const variants: Variants = {
 
 const CARDS_SORTED = orderBy(CARDS, ["tier", "name"], ["desc", "asc"]);
 
+const CardAnimated = memo(
+  ({
+    card,
+    onToggle,
+    disabled,
+  }: {
+    card: CardType;
+    onToggle: (id: string, isDisabled: boolean) => void;
+    disabled: boolean;
+  }) => (
+    <motion.div
+      aria-disabled={disabled}
+      animate={disabled ? "disabled" : "active"}
+      variants={variants}
+      onClick={() => onToggle(card.id, disabled)}
+    >
+      <Card card={card} compact />
+    </motion.div>
+  )
+);
+
 export const EditCards = memo(() => {
   const {
     disabledCardIds,
@@ -36,14 +52,16 @@ export const EditCards = memo(() => {
     useState<CardType[]>(CARDS_SORTED);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleToggleCard = (id: string) => {
-    if (disabledCardIds)
-      if (includes(disabledCardIds, id)) {
+  const handleToggleCard = useCallback(
+    (id: string, isDisabled: boolean) => {
+      if (isDisabled) {
         delDisabledCardId(id);
       } else {
         addDisabledCardId(id);
       }
-  };
+    },
+    [addDisabledCardId, delDisabledCardId]
+  );
 
   useEffect(() => {
     const dbCall = debounce(() => {
@@ -70,7 +88,7 @@ export const EditCards = memo(() => {
   }, [searchQuery]);
 
   return (
-    <div className="w-full">
+    <div className="flex flex-col w-full min-h-0">
       <Toolbar.Root className="flex items-center gap-2 z-10 bg-neutral-800 py-3">
         <Toolbar.Group
           aria-label="Search"
@@ -103,7 +121,8 @@ export const EditCards = memo(() => {
           />
         )}
       </Toolbar.Root>
-      <div className="h-[70dvh] overflow-y-auto flex flex-col py-3 pr-2 -mr-2">
+      <div className="h-6 outline-0 shrink-0 -mb-3 bg-gradient-to-b from-50% from-neutral-800/100 to-neutral-800/0 z-10" />
+      <div className="relative h-[70dvh] overflow-y-auto flex flex-col py-5 pr-2.5 -mr-2.5">
         {isEmpty(displayedCards) ? (
           <div className="grow flex justify-center items-center">
             <span className="text-neutral-400 text-center">
@@ -113,21 +132,17 @@ export const EditCards = memo(() => {
         ) : (
           <div className="grid grid-cols-1 min-[22rem]:grid-cols-2 min-[35rem]:grid-cols-3 gap-2">
             {displayedCards.map((card) => (
-              <motion.div
-                aria-disabled={includes(disabledCardIds, card.id)}
+              <CardAnimated
                 key={card.id}
-                animate={
-                  includes(disabledCardIds, card.id) ? "disabled" : "active"
-                }
-                variants={variants}
-                onClick={() => handleToggleCard(card.id)}
-              >
-                <Card card={card} compact />
-              </motion.div>
+                card={card}
+                onToggle={handleToggleCard}
+                disabled={includes(disabledCardIds, card.id)}
+              />
             ))}
           </div>
         )}
       </div>
+      <div className="h-6 outline-0 shrink-0 -mt-3 bg-gradient-to-t from-50% from-neutral-800/100 to-neutral-800/0 z-10" />
     </div>
   );
 });

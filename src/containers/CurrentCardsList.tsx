@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Tier } from "../components/Tier";
 import { Button } from "../components/Button";
@@ -10,7 +10,7 @@ type Props = {
   onDiscard: (id: string) => void;
 };
 
-export const CurrentCardsList = ({ cards, onDiscard }: Props) => {
+export const CurrentCardsList = memo(({ cards, onDiscard }: Props) => {
   const [showActionsOnIdx, setShowActionsOnIdx] = useState(-1);
   const ref = useClickAway<HTMLDivElement>(() => setShowActionsOnIdx(-1));
   const prevCardsLength = useRef(0);
@@ -99,4 +99,4 @@ export const CurrentCardsList = ({ cards, onDiscard }: Props) => {
       <div className="h-5 shrink-0 sticky bottom-0 bg-gradient-to-t from-neutral-900/100 to-neutral-900/0" />
     </div>
   );
-};
+});
