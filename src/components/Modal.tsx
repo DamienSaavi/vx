@@ -8,16 +8,24 @@ type Props = PropsWithChildren & {
   open: boolean;
   setOpen: (open: boolean) => void;
   title: string;
-  maxWidth?: number | string;
+  dismissible?: boolean;
+  maxWidth?: number;
 };
 
 const BackdropAnimated = motion.create(Dialog.Backdrop);
 const PopupAnimated = motion.create(Dialog.Popup);
 
 export const Modal = memo(
-  ({ open, setOpen, title, maxWidth = "40rem", children }: Props) => {
+  ({
+    open,
+    setOpen,
+    title,
+    maxWidth = 40,
+    dismissible = false,
+    children,
+  }: Props) => {
     return (
-      <Dialog.Root open={open} onOpenChange={setOpen}>
+      <Dialog.Root dismissible={dismissible} open={open} onOpenChange={setOpen}>
         <AnimatePresence>
           {open && (
             <Dialog.Portal keepMounted>
@@ -35,10 +43,10 @@ export const Modal = memo(
               >
                 <div
                   className="flex flex-col grow min-w-0 min-h-0 max-h-[calc(100dvh-96px)] mb-12 items-stretch p-0 bg-neutral-800 rounded-xl border border-neutral-700 shadow-xl pointer-events-auto"
-                  style={{ maxWidth }}
+                  style={{ maxWidth: `${maxWidth}rem` }}
                 >
                   <div className="relative flex items-center justify-center m-3">
-                    <Dialog.Title className="font-bold text-lg text-center">
+                    <Dialog.Title className="font-bold text-xl text-center">
                       {title}
                     </Dialog.Title>
                     <Dialog.Close className="absolute left-0 cursor-pointer p-2.5 -m-2.5 text-neutral-400">
@@ -47,7 +55,7 @@ export const Modal = memo(
                   </div>
                   <Divider px={0.5} />
                   <div className="px-2 flex flex-col min-h-0 grow">
-                  {children}
+                    {children}
                   </div>
                 </div>
               </PopupAnimated>

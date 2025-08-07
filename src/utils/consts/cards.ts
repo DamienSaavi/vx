@@ -1,7 +1,5 @@
 import type { Card } from "../../models/types";
 
-export const TIER_PROBABILITY = [3, 8, 3, 1, 0];
-
 export const CARDS: Card[] = [
   {
     id: "400ea339-ddcd-4e2f-95ba-3175c67d7f80",

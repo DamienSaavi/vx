@@ -3,16 +3,15 @@ import { CurrentHand } from "./CurrentHand";
 import { CurrentCardsList } from "./CurrentCardsList";
 import { useCallback, useMemo, useState } from "react";
 import { filter, find, includes, isEmpty, random, union } from "lodash";
-import { CARDS, TIER_PROBABILITY } from "../utils/consts/cards";
+import { CARDS } from "../utils/consts/cards";
 import { Button } from "../components/Button";
 import { TbCardsFilled } from "react-icons/tb";
 import colors from "tailwindcss/colors";
-import { EditCards } from "./EditCards";
 import { Modal } from "../components/Modal";
 import type { Card } from "../models/types";
 import { ResetSessionConfirmation } from "./ResetSessionConfirmation";
 import { RiResetLeftLine } from "react-icons/ri";
-import { TbPlayCardOff } from "react-icons/tb";
+import { TbSettings } from "react-icons/tb";
 import { TbList } from "react-icons/tb";
 import { AnimatePresence, motion } from "motion/react";
 import { TiInfoLarge } from "react-icons/ti";
@@ -21,13 +20,17 @@ import { Badge } from "../components/Badge";
 import { useDisabledCards } from "../hooks/useDisabledCards";
 import { useActiveCards } from "../hooks/useActiveCards";
 import { useSettings } from "../hooks/useSettings";
+import { Settings } from "./Settings";
+import { EditCards } from "./EditCards";
+
 export const Session = () => {
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
-  const [isEditCardsModalOpen, setIsEditCardsModalOpen] = useState(false);
+  const [isEditDeckModalOpen, setIsEditDeckModalOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const { activeCardIds, addActiveCardId, delActiveCardId } = useActiveCards();
   const { disabledCardIds } = useDisabledCards();
-  const { viewMode, setViewMode } = useSettings();
+  const { viewMode, tierProbabilities, setViewMode } = useSettings();
 
   const cards = useMemo(() => {
     return activeCardIds
@@ -38,6 +41,7 @@ export const Session = () => {
   const options = useMemo(() => {
     const excludedSetIds = cards.map((card) => card.setId).filter(Boolean);
     const excludedCards = union(activeCardIds, disabledCardIds);
+
     return filter(
       CARDS,
       (card) =>
@@ -52,7 +56,7 @@ export const Session = () => {
     for (let i = 0; i < options.length; i++) {
       const option = options[i];
       const prevCursor = cursor;
-      cursor += TIER_PROBABILITY[option.tier];
+      cursor += tierProbabilities[option.tier];
       probabilityField.push([option.id, [prevCursor, cursor]]);
       cursor += 1;
     }
@@ -69,7 +73,7 @@ export const Session = () => {
     }
 
     addActiveCardId(selectedCardId);
-  }, [addActiveCardId, options]);
+  }, [addActiveCardId, options, tierProbabilities]);
 
   const handleDiscard = useCallback(
     (id: string) => delActiveCardId(id),
@@ -84,22 +88,16 @@ export const Session = () => {
   return (
     <div className="relative w-screen flex flex-col min-h-0 h-dvh max-h-dvh items-stretch bg-neutral-900 touch-pan-x">
       <div className="flex grow-0 shrink-0 justify-between p-4">
-        <Badge
-          content={
-            disabledCardIds.length
-              ? disabledCardIds.length.toString()
-              : undefined
-          }
-        >
+        <Badge content={disabledCardIds.length || undefined}>
           <Button
             size="lg"
             variant="outlined"
             color="secondary"
             shape="round"
             label="Modify Deck"
-            onClick={() => setIsEditCardsModalOpen((p) => !p)}
+            onClick={() => setIsSettingsModalOpen(true)}
           >
-            <TbPlayCardOff size={28} color={colors.slate[300]} />
+            <TbSettings size={28} color={colors.slate[300]} />
           </Button>
         </Badge>
         <Button
@@ -108,7 +106,7 @@ export const Session = () => {
           color="secondary"
           shape="round"
           label="Reset"
-          onClick={() => setIsInfoModalOpen((p) => !p)}
+          onClick={() => setIsInfoModalOpen(true)}
         >
           <TiInfoLarge size={28} color={colors.slate[300]} />
         </Button>
@@ -162,7 +160,7 @@ export const Session = () => {
             color="danger"
             shape="round"
             label="Reset"
-            onClick={() => setIsResetModalOpen((p) => !p)}
+            onClick={() => setIsResetModalOpen(true)}
           >
             <RiResetLeftLine />
           </Button>
@@ -173,18 +171,31 @@ export const Session = () => {
         open={isResetModalOpen}
         setOpen={setIsResetModalOpen}
         title="Reset"
-        maxWidth="28rem"
+        maxWidth={28}
       >
         <ResetSessionConfirmation onClose={() => setIsResetModalOpen(false)} />
       </Modal>
       <Modal
-        open={isEditCardsModalOpen}
-        setOpen={setIsEditCardsModalOpen}
-        title="Modify Deck"
+        open={!isEditDeckModalOpen && isSettingsModalOpen}
+        setOpen={setIsSettingsModalOpen}
+        maxWidth={25}
+        title="Settings"
+      >
+        <Settings onOpenEditDeckModal={() => setIsEditDeckModalOpen(true)} />
+      </Modal>
+      <Modal
+        open={isEditDeckModalOpen}
+        setOpen={setIsEditDeckModalOpen}
+        title="Edit Deck"
       >
         <EditCards />
       </Modal>
-      <Modal open={isInfoModalOpen} setOpen={setIsInfoModalOpen} title="Info">
+      <Modal
+        dismissible
+        open={isInfoModalOpen}
+        setOpen={setIsInfoModalOpen}
+        title="Info"
+      >
         <Info />
       </Modal>
     </div>

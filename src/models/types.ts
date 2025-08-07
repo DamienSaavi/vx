@@ -1,4 +1,4 @@
-type CardTier = 1 | 2 | 3 | 0;
+export type CardTier = 1 | 2 | 3 | 0;
 
 export type Card = {
   id: string;
@@ -9,6 +9,7 @@ export type Card = {
 };
 
 export type ViewMode = "cards" | "list";
+export type TierProbabilities = Record<CardTier, number>;
 
 export type Setting = { key: string; value: unknown };
 export type ActiveCard = { id: string; idx?: number };

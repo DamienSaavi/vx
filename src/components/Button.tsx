@@ -15,6 +15,7 @@ type Props = PropsWithChildren & {
   endIcon?: JSX.Element;
   variant?: Variant;
   disabled?: boolean;
+  wrap?: boolean;
   size?: Size;
   color?: Color;
   shape?: Shape;
@@ -47,6 +48,7 @@ export const Button = memo(
     startIcon,
     endIcon,
     disabled,
+    wrap = false,
     variant = "filled",
     size = "md",
     color = "primary",
@@ -81,11 +83,12 @@ export const Button = memo(
         aria-label={label}
         onClick={onClick}
         initial={{ scale: 1 }}
-        whileTap={{ scale: 0.9 }}
+        whileTap={{ scale: 0.95 }}
         className={clsx(
-          "flex items-center gap-2 cursor-pointer font-semibold border pointer-events-auto whitespace-nowrap",
+          "flex items-center h-fit gap-2 cursor-pointer font-semibold border pointer-events-auto whitespace-nowrap",
           shape === "square" ? "rounded-lg px-3 py-2" : "rounded-full p-2",
-          size === "sm" ? "text-sm" : size === "lg" ? "text-2xl" : "text-base"
+          size === "sm" ? "text-sm" : size === "lg" ? "text-2xl" : "text-base",
+          wrap && "whitespace-pre-wrap"
         )}
         style={getStyles()}
       >

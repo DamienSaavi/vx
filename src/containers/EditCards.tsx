@@ -89,7 +89,7 @@ export const EditCards = memo(() => {
 
   return (
     <div className="flex flex-col w-full min-h-0">
-      <Toolbar.Root className="flex items-center gap-2 z-10 bg-neutral-800 py-3">
+      <Toolbar.Root className="flex items-center gap-2 z-10 bg-neutral-800 pt-3">
         <Toolbar.Group
           aria-label="Search"
           className="flex items-center gap-3 grow shrink relative min-w-0"
