@@ -66,13 +66,6 @@ export const CARDS: Card[] = [
     description: "Complete the route without letting your feet touch the wall.",
   },
   {
-    id: "c303cccd-2a3c-4df2-a2eb-ce66865e0944",
-    name: "OCD",
-    tier: 1,
-    description:
-      "Touch all holds before completing the route. No need to establish a hold. Must use hand or finger.",
-  },
-  {
     id: "118558ae-c323-4b1a-8882-e5a91681052c",
     name: "Mission Impossible",
     tier: 1,
